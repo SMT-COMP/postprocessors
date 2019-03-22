@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Tjark Weber
-# SMT-COMP 2015 post-processor for the application track
+# SMT-COMP 2016 post-processor for the application track
 
 set -e
 set -u
