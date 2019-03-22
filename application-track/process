@@ -1,15 +1,18 @@
 #!/bin/bash
 
 # Tjark Weber
-# SMT-COMP 2014 post-processor for the application track
+# SMT-COMP 2015 post-processor for the application track
 
 set -e
 set -u
 
 if grep -qsw 'WRONG solver response: got' "$1"; then
     echo "wrong-answers=1"
+    # scoring rules: if there is a wrong answer, correct answers don't count
+    echo "correct-answers=0"
 else
     echo "wrong-answers=0"
+    SAT=$(grep -csw 'sat$' "$1") || SAT=0
+    UNSAT=$(grep -csw 'unsat$' "$1") || UNSAT=0
+    echo "correct-answers=$((SAT+UNSAT))"
 fi
-
-echo correct-answers="$(sed 's/.*SOLVED \(.*\) PROBLEMS IN .* SECONDS/\1/;t;d' "$1")"
