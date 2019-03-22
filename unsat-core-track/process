@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Matthias Heizmann (heizmann@informatik.uni-freiburg.de)
-# SMT-COMP 2016 post-processor for the unsat-core track
+# SMT-COMP 2017 post-processor for the Unsat-core Track
 
-# This postprocessor contains a copy of z3-4.4.1 which is located in the 
-# validation_solvers/z3 subfolder.
+# This postprocessor contains a copy several SMT solvers that are located in 
+# the validation_solvers subfolder
 
 # This bash script mainly does the following
 # 1. Examine if the check-sat result of the solver was "sat".
@@ -15,16 +15,19 @@
 # 3. Write the "unsat-core-validation-script.smt2" SMT script. This script
 #     is a copy of the input which contains only the assert commands whose
 #     corresponding named terms were in the unsat-core returned by the solver.
-# 4. Use another solver to validate the unsat core. We use this validation
-#     solver to check the unsat-core-validation-script.smt2. We consider
-#     the unsat-core valid if the validation solver did not return "sat"
+# 4. Use other solvers to validate the unsat core. We use the validation
+#     solvers to check the unsat-core-validation-script.smt2. We consider
+#     the unsat-core valid if none of the validation solvers returns "sat"
 #     within its timeout.
+#     We note that this slightly deviates from the SMT-COMP rules, hence in
+#     case of an erroneous result and ambiguous validation results a manual
+#     postprocessing of the final verdict might be neccessary.
 
 # $1: solver output
 # $2: path to pre-processed benchmark
 
 # timeout in seconds for each validating solver
-VALIDATION_TIMOUT=120
+VALIDATION_TIMOUT=300
 
 set -u
 # do not use 'set -e' since the scrambler my fail while trying to parse the unsat core
@@ -78,12 +81,14 @@ if [ "$CHECK_SAT_RESPONSE" == "unsat" ]; then
 		# use validation solvers to check validation script
 		VALIDATION_SOLVERS[1]="cvc4"
 		VALIDATION_SOLVERS[2]="mathsat"
-		VALIDATION_SOLVERS[3]="z3"
-		VALIDATION_SOLVER_COMMANDS[1]="./validation_solvers/cvc4/cvc4-2016-05-21-x86_64-linux-opt"
+		VALIDATION_SOLVERS[3]="vampire"
+		VALIDATION_SOLVERS[4]="z3"
+		VALIDATION_SOLVER_COMMANDS[1]="./validation_solvers/cvc4/cvc4"
 		VALIDATION_SOLVER_COMMANDS[2]="./validation_solvers/mathsat/bin/mathsat"
-		VALIDATION_SOLVER_COMMANDS[3]="./validation_solvers/z3/z3 -smt2"
+		VALIDATION_SOLVER_COMMANDS[3]="./validation_solvers/vampire/vampire -t 2000s -m 60000 --mode smtcomp --cores 4"
+		VALIDATION_SOLVER_COMMANDS[4]="./validation_solvers/z3/z3 -smt2"
 		UNSAT_CORE_VALIDATED="true"
-		for i in {1..3}
+		for i in {1..4}
 		do
 			TIME_START=`date +%s`
 			timeout -k 10 $VALIDATION_TIMOUT ${VALIDATION_SOLVER_COMMANDS[$i]} ./unsat-core-validation-script.smt2 &> validationOutput.txt
@@ -100,6 +105,7 @@ if [ "$CHECK_SAT_RESPONSE" == "unsat" ]; then
 			if [ "$VALIDATION_CHECK_SAT_RESULT" == "sat" ] || [ "$UNSAT_CORE_VALIDATED" == "false" ]; then
 				UNSAT_CORE_VALIDATED="false"
 				RESULT_IS_ERRONEOUS="1"
+				REDUCTION="0"
 			fi
 		done
 		echo "unsat-core-validated=$UNSAT_CORE_VALIDATED"
