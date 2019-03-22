@@ -1,0 +1,113 @@
+#!/bin/bash
+
+# Matthias Heizmann (heizmann@informatik.uni-freiburg.de)
+# SMT-COMP 2016 post-processor for the unsat-core track
+
+# This postprocessor contains a copy of z3-4.4.1 which is located in the 
+# validation_solvers/z3 subfolder.
+
+# This bash script mainly does the following
+# 1. Examine if the check-sat result of the solver was "sat".
+#    (would be considered as an error)
+# 2. Determine the difference between the number of assert commands in the 
+#     input and the number of names in the unsat-core which was returned by
+#     the solver. We call this difference the *reduction*.
+# 3. Write the "unsat-core-validation-script.smt2" SMT script. This script
+#     is a copy of the input which contains only the assert commands whose
+#     corresponding named terms were in the unsat-core returned by the solver.
+# 4. Use another solver to validate the unsat core. We use this validation
+#     solver to check the unsat-core-validation-script.smt2. We consider
+#     the unsat-core valid if the validation solver did not return "sat"
+#     within its timeout.
+
+# $1: solver output
+# $2: path to pre-processed benchmark
+
+# timeout in seconds for each validating solver
+VALIDATION_TIMOUT=120
+
+set -u
+# do not use 'set -e' since the scrambler my fail while trying to parse the unsat core
+
+# count number of assert commands
+NUMBER_OF_ASSERT_COMMANDS=`cat "$2" |grep assert|wc -l`
+
+# remove success response lines from solver output
+cat "$1" |grep -v success > ./cleanSolverOutput.txt
+# remove the StarExec timing information from each line of the solver output
+sed -i 's/^[0-9]*\.[0-9]*\/[0-9]*.[0-9]*\t//g' ./cleanSolverOutput.txt
+
+# get solver's check-sat response (the xargs removes leading and trailing whitespaces)
+CHECK_SAT_RESPONSE=`head -n 1 ./cleanSolverOutput.txt|xargs`
+
+RESULT_IS_ERRONEOUS="0"
+
+# the check-sat response is erroneous iff it is "sat"
+if [ "$CHECK_SAT_RESPONSE" == "sat" ]; then
+	echo "check-sat-result-is-erroneous=1"
+	echo "starexec-result="$CHECK_SAT_RESPONSE
+	RESULT_IS_ERRONEOUS="1"
+elif [ "$CHECK_SAT_RESPONSE" == "unsat" ]; then
+	echo "check-sat-result-is-erroneous=0"
+	echo "starexec-result="$CHECK_SAT_RESPONSE
+else 
+	echo "check-sat-result-is-erroneous=0"
+	echo "starexec-result=starexec-unknown"
+fi
+
+echo "number-of-assert-commands=$NUMBER_OF_ASSERT_COMMANDS"
+
+if [ "$CHECK_SAT_RESPONSE" == "unsat" ]; then
+	# remove all assert commands that are not in unsat core and remove named terms, do not scramble again (seed 0)
+	./scrambler -seed 0 -term_annot false -core ./cleanSolverOutput.txt < "$2" > ./core-extraction.txt
+
+	if [[ `head -n 1 ./core-extraction.txt|grep "ERROR"` ]]; then
+		# if we cannot parse the solvers output (e.g., not output because of timeout)
+		# this is not considered as an erroneous result but the reduction is set to 0
+		echo "parsable-unsat-core=false"
+		REDUCTION="0"
+	else
+		echo "parsable-unsat-core=true"
+		# for the validation script we also have to remove two commands that were added by preprocessor
+		cat ./core-extraction.txt|grep -v "(get-unsat-core)\|(set-option\ \:produce-unsat-cores\ true)" > unsat-core-validation-script.smt2
+		# size of unsat core was written as comment in the first line by the benchmark scrambler
+		SIZE_OF_UNSAT_CORE=`head -n 1 core-extraction.txt |sed -e 's/;; parsed //'|sed -e 's/ names:\ .*//'`
+		echo "size-unsat-core=$SIZE_OF_UNSAT_CORE"
+		REDUCTION=$[$NUMBER_OF_ASSERT_COMMANDS - $SIZE_OF_UNSAT_CORE]
+
+		# use validation solvers to check validation script
+		VALIDATION_SOLVERS[1]="cvc4"
+		VALIDATION_SOLVERS[2]="mathsat"
+		VALIDATION_SOLVERS[3]="z3"
+		VALIDATION_SOLVER_COMMANDS[1]="./validation_solvers/cvc4/cvc4-2016-05-21-x86_64-linux-opt"
+		VALIDATION_SOLVER_COMMANDS[2]="./validation_solvers/mathsat/bin/mathsat"
+		VALIDATION_SOLVER_COMMANDS[3]="./validation_solvers/z3/z3 -smt2"
+		UNSAT_CORE_VALIDATED="true"
+		for i in {1..3}
+		do
+			TIME_START=`date +%s`
+			timeout -k 10 $VALIDATION_TIMOUT ${VALIDATION_SOLVER_COMMANDS[$i]} ./unsat-core-validation-script.smt2 &> validationOutput.txt
+			TIME_END=`date +%s`
+			RUNTIME=$((TIME_END-TIME_START))
+			VALIDATION_CHECK_SAT_RESPONSE=`head -n 1 ./validationOutput.txt|xargs`
+			if [ "$VALIDATION_CHECK_SAT_RESPONSE" == "sat" ] || [ "$VALIDATION_CHECK_SAT_RESPONSE" == "unsat" ]; then
+				VALIDATION_CHECK_SAT_RESULT=$VALIDATION_CHECK_SAT_RESPONSE
+			else
+				VALIDATION_CHECK_SAT_RESULT="unknown"
+			fi
+			echo "validation-check-sat-result_${VALIDATION_SOLVERS[$i]}=$VALIDATION_CHECK_SAT_RESULT"
+			echo "validation-check-sat-time_${VALIDATION_SOLVERS[$i]}=$RUNTIME"
+			if [ "$VALIDATION_CHECK_SAT_RESULT" == "sat" ] || [ "$UNSAT_CORE_VALIDATED" == "false" ]; then
+				UNSAT_CORE_VALIDATED="false"
+				RESULT_IS_ERRONEOUS="1"
+			fi
+		done
+		echo "unsat-core-validated=$UNSAT_CORE_VALIDATED"
+		
+	fi
+else
+		REDUCTION="0"
+fi
+
+echo "result-is-erroneous=$RESULT_IS_ERRONEOUS"
+echo "reduction=$REDUCTION"
