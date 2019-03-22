@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Matthias Heizmann (heizmann@informatik.uni-freiburg.de)
-# SMT-COMP 2017 post-processor for the Unsat-core Track
+# SMT-COMP 2018 post-processor for the Unsat-core Track
 
 # This postprocessor contains a copy several SMT solvers that are located in 
 # the validation_solvers subfolder
@@ -17,42 +17,111 @@
 #     corresponding named terms were in the unsat-core returned by the solver.
 # 4. Use other solvers to validate the unsat core. We use the validation
 #     solvers to check the unsat-core-validation-script.smt2. We consider
-#     the unsat-core valid if none of the validation solvers returns "sat"
-#     within its timeout.
-#     We note that this slightly deviates from the SMT-COMP rules, hence in
-#     case of an erroneous result and ambiguous validation results a manual
-#     postprocessing of the final verdict might be neccessary.
+#     the unsat-core valid if the number of validation solvers that return 
+#     'sat' is smaller then or equal to the number of validation solvers that
+#     return 'unsat'.
+
+# The validation solvers that were added to this post-processor are the 
+# main track submissions of the following solvers.
+# * CVC4
+#     https://www.starexec.org/starexec/secure/details/solver.jsp?id=19757
+#     This build of CVC4 is based on code that is licensed under the GPL.
+#     A copy of the license is available in the 'bin' subfolder.
+# * MathSAT
+#     https://www.starexec.org/starexec/secure/details/solver.jsp?id=17270
+# * Vampire
+#     https://www.starexec.org/starexec/secure/details/solver.jsp?id=19968
+#     In order to keep this script simple the default configuration of Vampire
+#     was renamed from 'starexec_run_vampire_smtcomp' to 'starexec_run_default'.
+# * Z3
+#     https://www.starexec.org/starexec/secure/details/solver.jsp?id=16764
+
 
 # $1: solver output
 # $2: path to pre-processed benchmark
 
 # timeout in seconds for each validating solver
-VALIDATION_TIMOUT=300
+VALIDATION_TIMOUT=120
 
 set -u
 # do not use 'set -e' since the scrambler my fail while trying to parse the unsat core
 
+echo "ucpp-version=2018v5"
+
+# set validating solvers for each logic
+ABVFP="cvc4 z3"
+ALIA="cvc4 vampire z3"
+ANIA="cvc4 vampire z3"
+AUFBVDTLIA="cvc4 z3"
+AUFDTLIA="cvc4 vampire z3"
+AUFLIA="cvc4 vampire z3"
+AUFLIRA="cvc4 vampire z3"
+AUFNIRA="cvc4 vampire z3"
+BV="cvc4 z3"
+BVFP="cvc4 z3"
+FP="cvc4 z3"
+LIA="cvc4 vampire z3"
+LRA="cvc4 vampire z3"
+NIA="cvc4 vampire z3"
+NRA="cvc4 vampire z3"
+QF_ABV="cvc4 mathsat z3"
+QF_ABVFP="cvc4 z3"
+QF_ALIA="cvc4 mathsat z3"
+QF_ANIA="cvc4 z3"
+QF_AUFBV="cvc4 mathsat z3"
+QF_AUFLIA="cvc4 mathsat z3"
+QF_AUFNIA="cvc4 z3"
+QF_AX="cvc4 mathsat z3"
+QF_BV="cvc4 mathsat z3"
+QF_BVFP="cvc4 z3"
+QF_DT="cvc4 z3"
+QF_FP="cvc4 z3"
+QF_IDL="cvc4 mathsat z3"
+QF_LIA="cvc4 mathsat z3"
+QF_LIRA="cvc4 z3"
+QF_LRA="cvc4 mathsat z3"
+QF_NIA="cvc4 z3"
+QF_NIRA="cvc4 z3"
+QF_NRA="cvc4 z3"
+QF_RDL="cvc4 mathsat z3"
+QF_SLIA="cvc4 z3"
+QF_UF="cvc4 mathsat z3"
+QF_UFBV="cvc4 mathsat z3"
+QF_UFIDL="cvc4 mathsat z3"
+QF_UFLIA="cvc4 mathsat z3"
+QF_UFLRA="cvc4 mathsat z3"
+QF_UFNIA="cvc4 z3"
+QF_UFNRA="cvc4 z3"
+UF="cvc4 vampire z3"
+UFBV="cvc4 z3"
+UFDT="cvc4 vampire z3"
+UFDTLIA="cvc4 vampire z3"
+UFIDL="cvc4 vampire z3"
+UFLIA="cvc4 vampire z3"
+UFLRA="cvc4 vampire z3"
+UFNIA="cvc4 vampire z3"
+
 # count number of assert commands
-NUMBER_OF_ASSERT_COMMANDS=`cat "$2" |grep assert|wc -l`
+NUMBER_OF_ASSERT_COMMANDS=$(grep -c assert "$2")
 
 # remove success response lines from solver output
-cat "$1" |grep -v success > ./cleanSolverOutput.txt
+grep -v success "$1" > ./cleanSolverOutput.txt
 # remove the StarExec timing information from each line of the solver output
 sed -i 's/^[0-9]*\.[0-9]*\/[0-9]*.[0-9]*\t//g' ./cleanSolverOutput.txt
 
 # get solver's check-sat response (the xargs removes leading and trailing whitespaces)
-CHECK_SAT_RESPONSE=`head -n 1 ./cleanSolverOutput.txt|xargs`
+CHECK_SAT_RESPONSE=$(head -n 1 ./cleanSolverOutput.txt|xargs)
 
 RESULT_IS_ERRONEOUS="0"
 
 # the check-sat response is erroneous iff it is "sat"
 if [ "$CHECK_SAT_RESPONSE" == "sat" ]; then
 	echo "check-sat-result-is-erroneous=1"
-	echo "starexec-result="$CHECK_SAT_RESPONSE
+	echo "starexec-result=$CHECK_SAT_RESPONSE"
 	RESULT_IS_ERRONEOUS="1"
 elif [ "$CHECK_SAT_RESPONSE" == "unsat" ]; then
 	echo "check-sat-result-is-erroneous=0"
-	echo "starexec-result="$CHECK_SAT_RESPONSE
+	echo "starexec-result=$CHECK_SAT_RESPONSE"
 else 
 	echo "check-sat-result-is-erroneous=0"
 	echo "starexec-result=starexec-unknown"
@@ -62,39 +131,41 @@ echo "number-of-assert-commands=$NUMBER_OF_ASSERT_COMMANDS"
 
 if [ "$CHECK_SAT_RESPONSE" == "unsat" ]; then
 	# remove all assert commands that are not in unsat core and remove named terms, do not scramble again (seed 0)
-	./scrambler -seed 0 -term_annot false -core ./cleanSolverOutput.txt < "$2" > ./core-extraction.txt
+	./scrambler -seed 0 -term_annot false -core ./cleanSolverOutput.txt < "$2" > ./unsat-core-validation-script.smt2
 
-	if [[ `head -n 1 ./core-extraction.txt|grep "ERROR"` ]]; then
+	if [[ $(head -n 1 ./unsat-core-validation-script.smt2|grep "ERROR") ]]; then
 		# if we cannot parse the solvers output (e.g., not output because of timeout)
 		# this is not considered as an erroneous result but the reduction is set to 0
 		echo "parsable-unsat-core=false"
 		REDUCTION="0"
 	else
+		# extract the line with the set-logic command from the input SMT script
+		SET_LOGIC_COMMAND=$(sed -n '2p;3q' "$2")
+		# extract the string that states the logic
+		LOGIC=$(echo "$SET_LOGIC_COMMAND" |sed -e "s/^(set-logic\\ //" -e "s/)$//")
+		# use the lists from this beginning of this bash script to determine the validating solvers
+		declare VALIDATION_SOLVERS
+		VALIDATION_SOLVERS=(${!LOGIC})
 		echo "parsable-unsat-core=true"
-		# for the validation script we also have to remove two commands that were added by preprocessor
-		cat ./core-extraction.txt|grep -v "(get-unsat-core)\|(set-option\ \:produce-unsat-cores\ true)" > unsat-core-validation-script.smt2
 		# size of unsat core was written as comment in the first line by the benchmark scrambler
-		SIZE_OF_UNSAT_CORE=`head -n 1 core-extraction.txt |sed -e 's/;; parsed //'|sed -e 's/ names:\ .*//'`
+		SIZE_OF_UNSAT_CORE=$(head -n 1 ./unsat-core-validation-script.smt2 |sed -e 's/;; parsed //'|sed -e 's/ names:\ .*//')
 		echo "size-unsat-core=$SIZE_OF_UNSAT_CORE"
-		REDUCTION=$[$NUMBER_OF_ASSERT_COMMANDS - $SIZE_OF_UNSAT_CORE]
+		REDUCTION=$((NUMBER_OF_ASSERT_COMMANDS - SIZE_OF_UNSAT_CORE))
 
-		# use validation solvers to check validation script
-		VALIDATION_SOLVERS[1]="cvc4"
-		VALIDATION_SOLVERS[2]="mathsat"
-		VALIDATION_SOLVERS[3]="vampire"
-		VALIDATION_SOLVERS[4]="z3"
-		VALIDATION_SOLVER_COMMANDS[1]="./validation_solvers/cvc4/cvc4"
-		VALIDATION_SOLVER_COMMANDS[2]="./validation_solvers/mathsat/bin/mathsat"
-		VALIDATION_SOLVER_COMMANDS[3]="./validation_solvers/vampire/vampire -t 2000s -m 60000 --mode smtcomp --cores 4"
-		VALIDATION_SOLVER_COMMANDS[4]="./validation_solvers/z3/z3 -smt2"
-		UNSAT_CORE_VALIDATED="true"
-		for i in {1..4}
+		echo "validation-solvers=${#VALIDATION_SOLVERS[@]}"
+		UNSAT_CORE_CONFIRMATIONS="0"
+		UNSAT_CORE_REJECTIONS="0"
+		for (( i=0; i<${#VALIDATION_SOLVERS[@]}; i++ ));
 		do
-			TIME_START=`date +%s`
-			timeout -k 10 $VALIDATION_TIMOUT ${VALIDATION_SOLVER_COMMANDS[$i]} ./unsat-core-validation-script.smt2 &> validationOutput.txt
-			TIME_END=`date +%s`
+			TIME_START=$(date +%s)
+			VALIDATION_SOLVER=${VALIDATION_SOLVERS[i]}
+			VALIDATION_SOLVER_PATH="validation_solvers/$VALIDATION_SOLVER/bin"
+			pushd $VALIDATION_SOLVER_PATH > /dev/null
+			timeout -k 10 $VALIDATION_TIMOUT ./starexec_run_default ./../../../unsat-core-validation-script.smt2 &> ./../../../validationOutput.txt
+			popd > /dev/null
+			TIME_END=$(date +%s)
 			RUNTIME=$((TIME_END-TIME_START))
-			VALIDATION_CHECK_SAT_RESPONSE=`head -n 1 ./validationOutput.txt|xargs`
+			VALIDATION_CHECK_SAT_RESPONSE=$(head -n 1 ./validationOutput.txt|xargs)
 			if [ "$VALIDATION_CHECK_SAT_RESPONSE" == "sat" ] || [ "$VALIDATION_CHECK_SAT_RESPONSE" == "unsat" ]; then
 				VALIDATION_CHECK_SAT_RESULT=$VALIDATION_CHECK_SAT_RESPONSE
 			else
@@ -102,12 +173,23 @@ if [ "$CHECK_SAT_RESPONSE" == "unsat" ]; then
 			fi
 			echo "validation-check-sat-result_${VALIDATION_SOLVERS[$i]}=$VALIDATION_CHECK_SAT_RESULT"
 			echo "validation-check-sat-time_${VALIDATION_SOLVERS[$i]}=$RUNTIME"
-			if [ "$VALIDATION_CHECK_SAT_RESULT" == "sat" ] || [ "$UNSAT_CORE_VALIDATED" == "false" ]; then
-				UNSAT_CORE_VALIDATED="false"
-				RESULT_IS_ERRONEOUS="1"
-				REDUCTION="0"
+			if [ "$VALIDATION_CHECK_SAT_RESULT" == "sat" ]; then
+				UNSAT_CORE_REJECTIONS=$((UNSAT_CORE_REJECTIONS + 1))
+			fi
+			if [ "$VALIDATION_CHECK_SAT_RESULT" == "unsat" ]; then
+				UNSAT_CORE_CONFIRMATIONS=$((UNSAT_CORE_CONFIRMATIONS + 1))
 			fi
 		done
+		echo "unsat-core-rejections=$UNSAT_CORE_REJECTIONS"
+		echo "unsat-core-confirmations=$UNSAT_CORE_CONFIRMATIONS"
+		if [ "$UNSAT_CORE_REJECTIONS" -gt "$UNSAT_CORE_CONFIRMATIONS" ]; 
+		then
+			UNSAT_CORE_VALIDATED="false"
+			RESULT_IS_ERRONEOUS="1"
+			REDUCTION="0"
+		else 
+			UNSAT_CORE_VALIDATED="true"
+		fi
 		echo "unsat-core-validated=$UNSAT_CORE_VALIDATED"
 		
 	fi
