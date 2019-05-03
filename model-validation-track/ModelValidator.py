@@ -1,12 +1,3 @@
-
-#def warn(*args, **kwargs):
-#    pass
-#import warnings
-#warnings.warn = warn
-
-#import warnings
-#warnings.filterwarnings("ignore", category=DeprecationWarning)
-
 from pysmt.shortcuts import read_smtlib, BV, Symbol, simplify
 from pysmt.typing import BVType
 from pysmt.smtlib.printers import to_smtlib
