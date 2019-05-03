@@ -85,17 +85,32 @@ def readSmtFile(parser, smtFile):
         formula = script.get_strict_formula()
         return formula
 
-def checkFullModel(formula, model):
-    symbolCollector = SymbolCollector()
-    symbolCollector.walk(formula)
-    if len(model) > len(symbolCollector.symbols):
+def checkFullModel(model, symbols):
+    if len(model) > len(symbols):
         print ("INVALID: More variables in model than in input problem.")
         sys.exit(0)
 
-    for symbol in symbolCollector.symbols:
+    for symbol in symbols:
         if not symbol in model:
             print ("INVALID: Missing model value for {}.".format(symbol.symbol_name()))
             sys.exit(0)
+
+def isSymbol(lst):
+    # The list is empty for let symbols that were bound and are now out of scope
+    if (not lst):
+        return False
+    # Because we are done parsing everything else should have just one element
+    if (len(lst) != 1):
+        raise Exception("ERROR: Symbol bound to more than one value")
+    return lst[0].is_symbol()
+
+def getSymbols(parser):
+    # The parser keys map a string (symbol name) to a list of values they
+    # bind to in the current context. Since we are done parsing, this list
+    # should just contain the declarations.
+    syms = list(filter(isSymbol, parser.cache.keys.values()))
+    # flatten list of lists
+    return [s for sym in syms for s in sym]
 
 def validateModel(smtFile, modelFile):
     try:
@@ -108,9 +123,10 @@ def validateModel(smtFile, modelFile):
         parser = SmtLibParser()
 
         formula = readSmtFile(parser, smtFile)
+        symbols = getSymbols(parser)
         model = readModel(parser, modelFile)
 
-        checkFullModel(formula, model)
+        checkFullModel(model, symbols)
 
         result = simplify(formula.substitute(model))
 

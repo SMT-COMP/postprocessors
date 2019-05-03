@@ -14,7 +14,6 @@
 (assert (= y_0 (bvurem y_1 y_2)))
 (assert (= x_2 (_ bv0 32)))
 (assert (= y_2 (_ bv0 32)))
-(assert (or b (not b)))
 (check-sat)
 (get-model)
 (exit)
