@@ -1,0 +1,16 @@
+(set-logic QF_BV)
+(set-option :produce-models true)
+
+(declare-const x_0 (_ BitVec 32))
+(declare-const x_1 (_ BitVec 32))
+(declare-const x_2 (_ BitVec 32))
+(declare-const y_0 (_ BitVec 32))
+(declare-const y_1 (_ BitVec 32))
+(assert (= x_1 (bvadd x_0 y_0)))
+(assert (= y_1 (bvsub x_1 y_0)))
+(assert (= x_2 (bvadd x_1 y_1)))
+
+(assert (let ((.def_0 (= y_1 x_0))) (let ((.def_1 (= x_2 y_0))) (let ((.def_2 (and .def_1 .def_0))) (let ((.def_3 (not .def_2))) (let ((.def_4 (bvadd x_1 y_1))) (let ((.def_5 (= x_2 .def_4))) (let ((.def_6 (bvsub x_1 y_0))) (let ((.def_7 (= y_1 .def_6))) (let ((.def_8 (bvadd x_0 y_0))) (let ((.def_9 (= x_1 .def_8))) (let ((.def_10 (and .def_9 .def_7 .def_5 .def_3))) .def_10))))))))))))
+(check-sat)
+(get-model)
+(exit)
