@@ -80,7 +80,7 @@ def validateModel(smtFile, modelFile):
         parser = SmtLibParser()
 
         formula = readSmtFile(parser, smtFile)
-        symbols = get_env().formula_manager.symbols.values()
+        symbols = get_env().formula_manager.get_all_symbols()
         model = readModel(parser, modelFile)
 
         checkFullModel(model, symbols)
