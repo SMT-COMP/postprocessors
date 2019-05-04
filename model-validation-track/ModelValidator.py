@@ -2,13 +2,9 @@ import sys
 import argparse
 from os import path
 
-from pysmt.shortcuts import read_smtlib, get_env
-from pysmt.shortcuts import BV, Symbol
-from pysmt.typing import BVType
-from pysmt.smtlib.printers import to_smtlib
+from pysmt.shortcuts import get_env
 from pysmt.smtlib.parser import SmtLibParser, Tokenizer
 from pysmt.exceptions import PysmtSyntaxError
-from pysmt.walkers import IdentityDagWalker
 
 
 def parseDefineFun(parser, tokens):
