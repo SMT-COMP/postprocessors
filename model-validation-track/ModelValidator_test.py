@@ -27,14 +27,14 @@ def validate(problem, model):
             "--model", model]
     res = subprocess.run(args, capture_output=True)
     msg = res.stdout.decode('ascii')
-    return msg.startswith("VALID")
+    return msg.startswith("VALID"), msg
 
 for problem, model in VALID_TEST_CASES:
-    res = validate(path_join(BASE_DIR, problem),
+    res, msg = validate(path_join(BASE_DIR, problem),
                    path_join(BASE_DIR, model))
-    assert res, (problem, model)
+    assert res, (problem, model, msg)
 
 for problem, model in INVALID_TEST_CASES:
-    res = validate(path_join(BASE_DIR, problem),
-                   path_join(BASE_DIR, model))
-    assert not res, (problem, model)
+    res, msg = validate(path_join(BASE_DIR, problem),
+                        path_join(BASE_DIR, model))
+    assert not res, (problem, model, msg)
