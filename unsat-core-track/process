@@ -40,6 +40,13 @@
 # $1: solver output
 # $2: path to pre-processed benchmark
 
+if [[ ! $# -eq 2 ]]; then
+    echo "Usage: $0 <solver-output> <path-to-processed-benchmark>"
+    exit 1
+fi
+
+
+
 # timeout in seconds for each validating solver
 VALIDATION_TIMOUT=120
 
