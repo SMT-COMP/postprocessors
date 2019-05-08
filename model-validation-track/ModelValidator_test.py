@@ -25,16 +25,20 @@ def validate(problem, model):
     args = [interpreter, "ModelValidator.py",
             "--smt2", problem,
             "--model", model]
-    res = subprocess.run(args, capture_output=True)
+    res = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     msg = res.stdout.decode('ascii')
     return msg.startswith("VALID"), msg
 
 for problem, model in VALID_TEST_CASES:
+    print("testing VALID problem {} ...".format(problem))
     res, msg = validate(path_join(BASE_DIR, problem),
                    path_join(BASE_DIR, model))
     assert res, (problem, model, msg)
+    print("OK")
 
 for problem, model in INVALID_TEST_CASES:
+    print("testing INVALID problem {} ...".format(problem))
     res, msg = validate(path_join(BASE_DIR, problem),
                         path_join(BASE_DIR, model))
     assert not res, (problem, model, msg)
+    print("OK")
