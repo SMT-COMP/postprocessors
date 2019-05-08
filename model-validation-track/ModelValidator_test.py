@@ -2,6 +2,10 @@ import sys
 import subprocess
 from os.path import join as path_join
 
+UNKNOWN_TEST_CASES = [
+    ("test0.smt2", "model0.smt2"),
+]
+
 VALID_TEST_CASES = [
     ("test1.smt2", "model1.cvc4.smt2"),
     ("test1.smt2", "model1.z3.smt2"),
@@ -28,6 +32,13 @@ def validate(problem, model):
     res = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     msg = res.stdout.decode('ascii')
     return msg.startswith("VALID"), msg
+
+for problem, model in UNKNOWN_TEST_CASES:
+    print("testing UNKNOWN problem {} ...".format(problem))
+    res, msg = validate(path_join(BASE_DIR, problem),
+                   path_join(BASE_DIR, model))
+    assert not res, (problem, model, msg)
+    print("OK")
 
 for problem, model in VALID_TEST_CASES:
     print("testing VALID problem {} ...".format(problem))

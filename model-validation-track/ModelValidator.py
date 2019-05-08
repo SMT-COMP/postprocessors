@@ -65,7 +65,8 @@ def checkFullModel(model, symbols):
 
     for symbol in symbols:
         if not symbol in model:
-            print ("INVALID: Missing model value for {}.".format(symbol.symbol_name()))
+            print ("INVALID: Missing model value for {}.".format(
+                symbol.symbol_name()))
             sys.exit(0)
 
 
@@ -76,6 +77,10 @@ def validateModel(smtFile, modelFile):
 
         if not path.exists(modelFile):
             raise Exception("File not found: {}".format(modelFile))
+
+        if path.getsize(modelFile) == 0:
+            print ("UNKNOWN")
+            sys.exit(0)
 
         parser = SmtLibParser()
 
