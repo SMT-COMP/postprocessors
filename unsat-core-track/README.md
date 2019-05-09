@@ -1,22 +1,27 @@
-## The unsat core track post-processor
+## The Unsat-Core Track Post-Processor
 
-The SMT Competition unsat core track post-processor takes as input an
-unsat core (see an example of the format in
-[here](http://smtlib.cs.uiowa.edu/examples.shtml)) and the smt2 file
-from which the unsat core is constructed, and verifies that the unsat
-core is unsatisfiable using a set of validating solvers built into the
-script.
+The SMT Competition Unsat-Core Track post-processor takes as input
+* a file with the solver responses to the [SMT-LIB v2](http://www.smt-lib.org)
+commands `check-sat` and `get-unsat-core`  
+(for examples, see file [test.out](test/test.out)
+ as an example response to [test.smt2](test/test.smt2),
+ and [here](http://smtlib.cs.uiowa.edu/examples.shtml))
+* and the [SMT-LIB v2](http://www.smt-lib.org) file from which the unsat core
+was constructed.
+
+It checks if the solver response to `check-sat` is indeed `unsat` and
+verifies that the unsat core returned in response to `get-unsat-core` is
+unsatisfiable using a set of validating solvers built into the script.
 
 ### Setup
 
-1. Ensure that the validating solvers are available at
-
+1. Unpack all [validation solvers](validation_solvesr) and ensure that they
+   are available at
 ```bash
 ./validation_solvers/<solver>/bin/<solver>
 ```
-
-The solvers required by the script at the moment are `cvc4`, `mathsat`,
-`z3`, and `vampire`.
+The solvers currently required by the script are `CVC4`, `MathSAT`, `Z3`, and
+`Vampire`.
 
 2. Ensure that the [scrambler](https://github.com/SMT-COMP/scrambler) is in
 the current directory as a compiled binary.
@@ -27,10 +32,9 @@ the current directory as a compiled binary.
 $ ./process <solver-output> <path-to-benchmark>
 ```
 
-There is test a case in `./test/`.  Running an unsat core solver on
-this file should result in output similar to `./test/test.out`.
-
-To verify the output, type
+There is test a case in directory [test](test).  Running an unsat core solver on
+this file should result in output similar to [test/test.out](test/test.out).
+To verify the output, call
 
 ```bash
 $ ./process ./test/test.out ./test/test.smt2
