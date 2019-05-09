@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# This is a wrapper script that allows the model validator to be used as a
+# postprocessor on StarExec.
+
+# $1: benchmark filename
+# $2: model
+
+PYTHONPATH="pysmt" python2 ModelValidator.py --smt2 $1 --model $2 
+
