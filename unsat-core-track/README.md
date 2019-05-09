@@ -12,7 +12,7 @@ script.
 1. Ensure that the validating solvers are available at
 
 ```bash
-$ ./validation_solvers/<solver>/bin/<solver>
+./validation_solvers/<solver>/bin/<solver>
 ```
 
 The solvers required by the script at the moment are `cvc4`, `mathsat`,
@@ -27,13 +27,13 @@ the current directory as a compiled binary.
 $ ./process <solver-output> <path-to-benchmark>
 ```
 
-There is test case in `test/test.smt2`.  Running an unsat core solver on
-this file should result in output similar to `test/test.out`.
+There is test a case in `./test/`.  Running an unsat core solver on
+this file should result in output similar to `./test/test.out`.
 
 To verify the output, type
 
 ```bash
-$ ./process test/test.out test/test.smt2
+$ ./process ./test/test.out ./test/test.smt2
 ```
 
 The output should be as follows
