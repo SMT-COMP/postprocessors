@@ -20,6 +20,8 @@ INVALID_TEST_CASES = [
     ("test2.smt2", "model2.z3.smt2"),
     ("test3.smt2", "model3.z3.smt2"),
     ("test4.smt2", "model4.smt2"),
+    ("test5.smt2", "model5.cvc4.smt2"),
+    ("test5.smt2", "model5.z3.smt2"),
 ]
 
 BASE_DIR = "examples/"

@@ -34,6 +34,9 @@ def readModel(parser, modelFile):
         tokens = Tokenizer(script, interactive=parser.interactive)
         res = []
         current = tokens.consume()
+        if (current == "unsat"):
+            print ("INVALID: the problem is satisfiable.")
+            sys.exit(0)
         if (current != "sat"):
             raise PysmtSyntaxError("'sat' expected", tokens.pos_info)
         parser.consume_opening(tokens, "<main>")
