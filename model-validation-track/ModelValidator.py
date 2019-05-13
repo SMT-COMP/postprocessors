@@ -102,6 +102,7 @@ def validateModel(smtFile, modelFile):
         else:
             print ("VALID")
     except Exception as e:
+        print ("INVALID: Unhandled exception.")
         print(e)
         sys.exit(1)
 

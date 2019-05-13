@@ -20,6 +20,7 @@ INVALID_TEST_CASES = [
     ("test2.smt2", "model2.z3.smt2"),
     ("test3.smt2", "model3.z3.smt2"),
     ("test4.smt2", "model4.smt2"),
+    ("test4.smt2", "model4.malformed.smt2"),
     ("test5.smt2", "model5.cvc4.smt2"),
     ("test5.smt2", "model5.z3.smt2"),
 ]
@@ -36,21 +37,21 @@ def validate(problem, model):
     return msg.startswith("VALID"), msg
 
 for problem, model in UNKNOWN_TEST_CASES:
-    print("testing UNKNOWN problem {} ...".format(problem))
+    print("testing UNKNOWN problem {} with model {}...".format(problem, model))
     res, msg = validate(path_join(BASE_DIR, problem),
                    path_join(BASE_DIR, model))
     assert not res, (problem, model, msg)
     print("OK")
 
 for problem, model in VALID_TEST_CASES:
-    print("testing VALID problem {} ...".format(problem))
+    print("testing VALID problem {} with model {}...".format(problem, model))
     res, msg = validate(path_join(BASE_DIR, problem),
                    path_join(BASE_DIR, model))
     assert res, (problem, model, msg)
     print("OK")
 
 for problem, model in INVALID_TEST_CASES:
-    print("testing INVALID problem {} ...".format(problem))
+    print("testing INVALID problem {} with model {}...".format(problem, model))
     res, msg = validate(path_join(BASE_DIR, problem),
                         path_join(BASE_DIR, model))
     assert not res, (problem, model, msg)
