@@ -34,6 +34,10 @@ def readModel(parser, modelFile):
         tokens = Tokenizer(script, interactive=parser.interactive)
         res = []
         current = tokens.consume()
+
+        if (current == "unknown"):
+            print ("UNKNOWN")
+            sys.exit(0)
         if (current == "unsat"):
             print ("INVALID: the problem is satisfiable.")
             sys.exit(0)

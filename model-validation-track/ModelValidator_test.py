@@ -4,6 +4,7 @@ from os.path import join as path_join
 
 UNKNOWN_TEST_CASES = [
     ("test0.smt2", "model0.smt2"),
+    ("test4.smt2", "model4.unknown.smt2"),
 ]
 
 VALID_TEST_CASES = [
