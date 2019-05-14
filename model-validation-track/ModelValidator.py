@@ -50,10 +50,12 @@ def readModel(parser, modelFile, inputFile):
                             status = "sat"
                             print ("INVALID: the problem is satisfiable.")
                         elif "unknown" in line:
+                            status = "unknown"
                             print ("UNKNOWN: the problem is unknown.")
                         break
             if not status:
-                raise PysmtSyntaxError("no valid status line in input")
+                raise PysmtSyntaxError(
+                    "no valid status line in input", tokens.pos_info)
             sys.exit(0)
         if (current != "sat"):
             raise PysmtSyntaxError("'sat' expected", tokens.pos_info)
