@@ -3,8 +3,13 @@ import subprocess
 from os.path import join as path_join
 
 UNKNOWN_TEST_CASES = [
-    ("test0.smt2", "model0.smt2"),
+    ("test0.smt2", "model0.empty.smt2"),
     ("test4.smt2", "model4.unknown.smt2"),
+    ("test6.smt2", "model4.unknown.smt2"),
+    ("test6.smt2", "model6.unsat.smt2"),
+    ("test6.smt2", "model5.cvc4.smt2"),
+    ("test6.smt2", "model5.z3.smt2"),
+    ("test6.smt2", "model0.empty.smt2"),
 ]
 
 VALID_TEST_CASES = [
@@ -24,6 +29,7 @@ INVALID_TEST_CASES = [
     ("test4.smt2", "model4.malformed.smt2"),
     ("test5.smt2", "model5.cvc4.smt2"),
     ("test5.smt2", "model5.z3.smt2"),
+    ("test5.smt2", "model6.unsat.smt2"),
 ]
 
 BASE_DIR = "examples/"

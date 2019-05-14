@@ -26,7 +26,7 @@ def parseDefineFun(parser, tokens):
     return (var, ebody)
 
 
-def readModel(parser, modelFile):
+def readModel(parser, modelFile, inputFile):
     with open(modelFile) as script:
         model = {}
         symbols = parser.env.formula_manager.symbols
@@ -39,7 +39,21 @@ def readModel(parser, modelFile):
             print ("UNKNOWN")
             sys.exit(0)
         if (current == "unsat"):
-            print ("INVALID: the problem is satisfiable.")
+            status = None
+            with open(inputFile, 'r') as infile:
+                for line in infile:
+                    if ":status" in line:
+                        if "unsat" in line:
+                            status = "unsat"
+                            print ("UNKNOWN: the problem is unsatisfiable.")
+                        elif "sat" in line:
+                            status = "sat"
+                            print ("INVALID: the problem is satisfiable.")
+                        elif "unknown" in line:
+                            print ("UNKNOWN: the problem is unknown.")
+                        break
+            if not status:
+                raise PysmtSyntaxError("no valid status line in input")
             sys.exit(0)
         if (current != "sat"):
             raise PysmtSyntaxError("'sat' expected", tokens.pos_info)
@@ -77,7 +91,7 @@ def checkFullModel(model, symbols):
             sys.exit(0)
 
 
-def validateModel(smtFile, modelFile):
+def validateModel(smtFile, modelFile, inputFile):
     try:
         if not path.exists(smtFile):
             raise Exception("File not found: {}".format(smtFile))
@@ -93,7 +107,7 @@ def validateModel(smtFile, modelFile):
 
         formula = readSmtFile(parser, smtFile)
         symbols = get_env().formula_manager.get_all_symbols()
-        model = readModel(parser, modelFile)
+        model = readModel(parser, modelFile, inputFile)
 
         checkFullModel(model, symbols)
 
@@ -121,7 +135,7 @@ def main():
                         required = True)
 
     args = parser.parse_args()
-    validateModel(args.smt2, args.model)
+    validateModel(args.smt2, args.model, args.smt2)
 
 
 main()

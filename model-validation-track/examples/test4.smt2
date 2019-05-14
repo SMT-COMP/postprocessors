@@ -1,4 +1,4 @@
-;; Checking that partial  models are rejected
+;; Checking that partial models are rejected
 (set-logic QF_BV)
 (set-option :produce-models true)
 
