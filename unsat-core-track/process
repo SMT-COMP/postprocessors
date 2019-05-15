@@ -138,7 +138,7 @@ echo "number-of-assert-commands=$NUMBER_OF_ASSERT_COMMANDS"
 
 if [ "$CHECK_SAT_RESPONSE" == "unsat" ]; then
 	# remove all assert commands that are not in unsat core and remove named terms, do not scramble again (seed 0)
-	./scrambler -seed 0 -term_annot false -core ./cleanSolverOutput.txt < "$2" > ./unsat-core-validation-script.smt2
+	./scrambler -seed 0 -term_annot false -core ./cleanSolverOutput.txt < "$2" > ./unsat-core-validation-script.smt2 2>&1
 
 	if [[ $(head -n 1 ./unsat-core-validation-script.smt2|grep "ERROR") ]]; then
 		# if we cannot parse the solvers output (e.g., not output because of timeout)
