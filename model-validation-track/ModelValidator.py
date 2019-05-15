@@ -53,9 +53,10 @@ def readModel(parser, modelFile, inputFile):
                             status = "unknown"
                             print ("UNKNOWN: the problem is unknown.")
                         break
+            # the benchmark scrambler removes the status line, in case of a
+            # benchmark without status line we assume satisfiability
             if not status:
-                raise PysmtSyntaxError(
-                    "no valid status line in input", tokens.pos_info)
+                print ("INVALID: the problem is satisfiable.")
             sys.exit(0)
         if (current != "sat"):
             raise PysmtSyntaxError("'sat' expected", tokens.pos_info)
