@@ -27,11 +27,10 @@ did not succeed. It will output `UNKNOWN` if the input model is empty.
 
 ### Usage
 
-The `ModelValidator.py` script expects that the latest GitHub master version
-of [pySMT](https://github.com/pysmt/pysmt) is installed.  
-Use `pip install pysmt --pre` install latest master
-as a pre-release. See the [pySMT documentation](https://pysmt.readthedocs.io)
-for more instructions on how to install pySMT.
+The `ModelValidator.py` script uses the pySMT [pySMT](https://github.com/pysmt/pysmt)
+version packaged in this repository (pysmt.tar.xz). To run use `PYTHONPATH="pysmt" python2 ModelValidator.py`.
+See the [pySMT documentation](https://pysmt.readthedocs.io)
+for more information about pySMT.
 
 ```
 ModelValidator.py [-h] --smt2 SMT2 --model MODEL

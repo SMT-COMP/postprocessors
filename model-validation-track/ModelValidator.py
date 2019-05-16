@@ -79,7 +79,7 @@ def readSmtFile(parser, smtFile):
     with open(smtFile) as stream:
         script = parser.get_script(stream)
         formula = script.get_strict_formula()
-        return formula
+        return (formula, script.get_declared_symbols())
 
 
 def checkFullModel(model, symbols):
@@ -108,8 +108,7 @@ def validateModel(smtFile, modelFile, inputFile):
 
         parser = SmtLibParser()
 
-        formula = readSmtFile(parser, smtFile)
-        symbols = get_env().formula_manager.get_all_symbols()
+        (formula, symbols) = readSmtFile(parser, smtFile)
         model = readModel(parser, modelFile, inputFile)
 
         checkFullModel(model, symbols)

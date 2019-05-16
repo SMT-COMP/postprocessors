@@ -19,6 +19,8 @@ VALID_TEST_CASES = [
     ("test1let.smt2", "model1.z3.smt2"),
     ("test2.smt2", "model2.cvc4.smt2"),
     ("test3.smt2", "model3.cvc4.smt2"),
+    ("test6.smt2", "model6.smt2"),
+    ("test7.smt2", "model7.smt2"),
 ]
 
 INVALID_TEST_CASES = [
