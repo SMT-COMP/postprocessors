@@ -60,7 +60,15 @@ def readModel(parser, modelFile, inputFile):
             sys.exit(0)
         if (current != "sat"):
             raise PysmtSyntaxError("'sat' expected", tokens.pos_info)
-        parser.consume_opening(tokens, "<main>")
+        # Return UNKNOWN if the output is only "sat" and does not contain a model
+        try:
+            current = tokens.consume_maybe()
+        except StopIteration:
+            print ("UNKNOWN")
+            sys.exit(0)
+
+        if (current != "("):
+            raise PysmtSyntaxError("'(' expected", tokens.pos_info)
         current = tokens.consume()
         if (current != "model"):
             raise PysmtSyntaxError("'model' expected", tokens.pos_info)

@@ -10,6 +10,7 @@ UNKNOWN_TEST_CASES = [
     ("test6.smt2", "model5.cvc4.smt2"),
     ("test6.smt2", "model5.z3.smt2"),
     ("test6.smt2", "model0.empty.smt2"),
+    ("test4.smt2", "model4.sat-no-model.smt2"),
 ]
 
 VALID_TEST_CASES = [
@@ -21,6 +22,7 @@ VALID_TEST_CASES = [
     ("test3.smt2", "model3.cvc4.smt2"),
     ("test6.smt2", "model6.smt2"),
     ("test7.smt2", "model7.smt2"),
+    ("test8.smt2", "model8.smt2"),
 ]
 
 INVALID_TEST_CASES = [
