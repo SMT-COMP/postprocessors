@@ -139,10 +139,11 @@ def validateModel(smtFile, modelFile, inputFile):
         else:
             print ("model_validator_status=VALID")
             print ("model_validator_error=none")
+            print ("starexec-result=sat")
     except Exception as e:
         print ("model_validator_status=INVALID")
         print ("model_validator_error=unhandled_exception")
-        sys.exit(1)
+        sys.exit(0)
 
 
 def main():
@@ -157,5 +158,9 @@ def main():
     args = parser.parse_args()
     validateModel(args.smt2, args.model, args.smt2)
 
-
-main()
+try:
+    main()
+except Exception as e:
+    print ("model_validator_status=INVALID")
+    print ("model_validator_error=toplevel_unhandled_exception")
+    sys.exit(0)
