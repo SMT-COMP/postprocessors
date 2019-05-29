@@ -36,7 +36,8 @@ def readModel(parser, modelFile, inputFile):
         current = tokens.consume()
 
         if (current == "unknown"):
-            print ("UNKNOWN")
+            print ("model_validator_status=UNKNOWN")
+            print ("model_validator_error=solver_returned_unknown")
             sys.exit(0)
         if (current == "unsat"):
             status = None
@@ -45,18 +46,22 @@ def readModel(parser, modelFile, inputFile):
                     if ":status" in line:
                         if "unsat" in line:
                             status = "unsat"
-                            print ("UNKNOWN: the problem is unsatisfiable.")
+                            print ("model_validator_status=UNKNOWN")
+                            print ("model_validator_error=the_problem_status_is_unsatisfiable")
                         elif "sat" in line:
                             status = "sat"
-                            print ("INVALID: the problem is satisfiable.")
+                            print ("model_validator_status=INVALID")
+                            print ("model_validator_error=the_problem_status_is_satisfiable")
                         elif "unknown" in line:
+                            print ("model_validator_status=UNKNOWN")
+                            print ("model_validator_error=the_problem_status_is_unknown")
                             status = "unknown"
-                            print ("UNKNOWN: the problem is unknown.")
                         break
             # the benchmark scrambler removes the status line, in case of a
             # benchmark without status line we assume satisfiability
             if not status:
-                print ("INVALID: the problem is satisfiable.")
+                print ("model_validator_status=INVALID")
+                print ("model_validator_error=the_problem_has_no_status")
             sys.exit(0)
         if (current != "sat"):
             raise PysmtSyntaxError("'sat' expected", tokens.pos_info)
@@ -64,7 +69,8 @@ def readModel(parser, modelFile, inputFile):
         try:
             current = tokens.consume_maybe()
         except StopIteration:
-            print ("UNKNOWN")
+            print ("model_validator_status=UNKNOWN")
+            print ("model_validator_error=no_output")
             sys.exit(0)
 
         if (current != "("):
@@ -92,13 +98,14 @@ def readSmtFile(parser, smtFile):
 
 def checkFullModel(model, symbols):
     if len(model) > len(symbols):
-        print ("INVALID: More variables in model than in input problem.")
+        print ("model_validator_status=INVALID")
+        print ("model_validator_error=more_variables_in_model_than_input")
         sys.exit(0)
 
     for symbol in symbols:
         if not symbol in model:
-            print ("INVALID: Missing model value for {}.".format(
-                symbol.symbol_name()))
+            print ("model_validator_status=INVALID")
+            print ("model_validator_error=missing_model_value")
             sys.exit(0)
 
 
@@ -111,7 +118,8 @@ def validateModel(smtFile, modelFile, inputFile):
             raise Exception("File not found: {}".format(modelFile))
 
         if path.getsize(modelFile) == 0:
-            print ("UNKNOWN")
+            print ("model_validator_status=UNKNOWN")
+            print ("model_validator_error=no_output")
             sys.exit(0)
 
         parser = SmtLibParser()
@@ -122,16 +130,18 @@ def validateModel(smtFile, modelFile, inputFile):
         checkFullModel(model, symbols)
 
         result = formula.substitute(model).simplify()
-
         if not result.is_constant():
-            print ("INVALID: Did not provide a full model.")
+            print ("model_validator_status=INVALID")
+            print ("model_validator_error=not_full_model")
         elif not result.is_true():
-            print ("INVALID: Model does not evaluate to true.")
+            print ("model_validator_status=INVALID")
+            print ("model_validator_error=model_does_not_evaluate_to_true")
         else:
-            print ("VALID")
+            print ("model_validator_status=VALID")
+            print ("model_validator_error=none")
     except Exception as e:
-        print ("INVALID: Unhandled exception.")
-        print(e)
+        print ("model_validator_status=INVALID")
+        print ("model_validator_error=unhandled_exception")
         sys.exit(1)
 
 
