@@ -143,6 +143,7 @@ def validateModel(smtFile, modelFile, inputFile):
     except Exception as e:
         print ("model_validator_status=INVALID")
         print ("model_validator_error=unhandled_exception")
+        print ("model_validator_exception=\"{}\"".format(str(e).replace("'", "\\'").replace('"', '\\"').replace('\n',' ')))
         sys.exit(0)
 
 
@@ -163,4 +164,5 @@ try:
 except Exception as e:
     print ("model_validator_status=INVALID")
     print ("model_validator_error=toplevel_unhandled_exception")
+    print ("model_validator_exception=\"{}\"".format(str(e).replace("'", "\\'").replace('"', '\\"').replace('\n',' ')))
     sys.exit(0)
