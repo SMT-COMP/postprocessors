@@ -1,0 +1,11 @@
+;; Checking that we handle various symbols
+(set-info :smt-lib-version 2.6)
+(set-logic QF_BV)
+(set-option :produce-models true)
+(set-info :status sat)
+(declare-fun |v1| () (_ BitVec 4))
+(declare-fun |v2| () (_ BitVec 4))
+(assert (= |v1| |v2|))
+(check-sat)
+(get-model)
+(exit)
