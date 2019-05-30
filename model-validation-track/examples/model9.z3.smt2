@@ -1,4 +1,3 @@
-(error "line 16 column 18: unknown constant notes")
 sat
 (model
   (define-fun | | () (_ BitVec 4)
@@ -13,4 +12,11 @@ sat
     #xf)
   (define-fun ~!@$%^&*_-+=<>.?/ () (_ BitVec 4)
     #x0)
+  (define-fun notes () (_ BitVec 4)
+    #x1)
+  (define-fun |?v0| () (_ BitVec 4)
+    #x2)
+  (define-fun v1 () (_ BitVec 4)
+    #x3)
+  (define-fun |~!@$%^&*_-+=<>.?/()| () (_ BitVec 4) #x4)
 )

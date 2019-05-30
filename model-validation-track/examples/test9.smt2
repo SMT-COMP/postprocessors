@@ -1,8 +1,21 @@
-;; Checking that we handle various symbols
 (set-info :smt-lib-version 2.6)
 (set-logic QF_BV)
 (set-option :produce-models true)
+(set-info :source |
+Constructed by Trevor Hansen to test edge case parsing
+|)
+(set-info :category "check")
 (set-info :status sat)
+;The SMT-LIB Standard Version 2.0, Release: March 30, 2010
+; :notes is a reserved keyword; but not notes without the colon.
+(declare-fun notes () (_ BitVec 4))
+;Symbols. A symbol is either a non-empty sequence of letters, digits and the characters
+;~ ! @ $ % ^ & * _ - + = < > . ? / that does not start with a digit, or a sequence of
+;printable ASCII characters, including white spaces, that starts and ends with | and does
+;not otherwise contain | .
+; Other more difficult things that are allowed, but seem ridiculous are:
+; Having /n in symbol names.
+; Having symbol names that are functions in other theories: +, /
 (declare-fun | | () (_ BitVec 4))
 (declare-fun || () (_ BitVec 4))
 (declare-fun ?v0 () (_ BitVec 4))

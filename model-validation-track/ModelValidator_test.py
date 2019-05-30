@@ -21,6 +21,7 @@ VALID_TEST_CASES = [
     ("test7.smt2", "model7.smt2"),
     ("test8.smt2", "model8.smt2"),
     ("test10.smt2", "model10.smt2"),
+    ("test9.smt2", "model9.cvc4.smt2"),
 ]
 
 INVALID_TEST_CASES = [
@@ -36,6 +37,7 @@ INVALID_TEST_CASES = [
     ("test6.smt2", "model5.cvc4.smt2"),
     ("test6.smt2", "model5.z3.smt2"),
     ("test1.bool.smt2", "model1.bool.smt2"),
+    ("test9.smt2", "model9.z3.smt2"),
 ]
 
 BASE_DIR = "examples/"
