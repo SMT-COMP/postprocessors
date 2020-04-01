@@ -22,6 +22,14 @@ VALID_TEST_CASES = [
     ("QF_BV", "test8.smt2", "model8.smt2"),
     ("QF_BV", "test10.smt2", "model10.smt2"),
     ("QF_BV", "test9.smt2", "model9.cvc4.smt2"),
+    ("QF_LIA", "test1.smt2", "model1.smtinterpol.smt2"),
+    ("QF_LIA", "test1.smt2", "model1.z3.smt2"),
+    ("QF_LIA", "test1.smt2", "model1.cvc4.smt2"),
+    ("QF_LIA", "test2.smt2", "model2.smtinterpol.smt2"),
+    ("QF_LIA", "test2.smt2", "model2.z3.smt2"),
+    ("QF_LIA", "test2.smt2", "model2.cvc4.smt2"),
+    ("QF_LIRA", "test1.smt2", "model1.smtinterpol.smt2"),
+    ("QF_LIRA", "test1.smt2", "model1.cvc4.smt2"),
 ]
 
 INVALID_TEST_CASES = [
@@ -38,6 +46,7 @@ INVALID_TEST_CASES = [
     ("QF_BV", "test6.smt2", "model5.z3.smt2"),
     ("QF_BV", "test1.bool.smt2", "model1.bool.smt2"),
     ("QF_BV", "test9.smt2", "model9.z3.smt2"),
+    ("QF_LIRA", "test1.smt2", "model1.broken.smt2"),
 ]
 
 BASE_DIR = "examples/"
