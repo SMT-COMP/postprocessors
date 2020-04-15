@@ -30,6 +30,9 @@ VALID_TEST_CASES = [
     ("QF_LIA", "test2.smt2", "model2.cvc4.smt2"),
     ("QF_LIRA", "test1.smt2", "model1.smtinterpol.smt2"),
     ("QF_LIRA", "test1.smt2", "model1.cvc4.smt2"),
+    ("QF_LIRA", "LCTES_smtopt.smt2", "model.LCTES_smtopt.cvc4.smt2"),
+    ("QF_LIRA", "LCTES_smtopt.smt2", "model.LCTES_smtopt.z3.smt2"),
+    ("QF_LIRA", "LCTES_smtopt.smt2", "model.LCTES_smtopt.smtinterpol.smt2"),
 ]
 
 INVALID_TEST_CASES = [
@@ -47,6 +50,7 @@ INVALID_TEST_CASES = [
     ("QF_BV", "test1.bool.smt2", "model1.bool.smt2"),
     ("QF_BV", "test9.smt2", "model9.z3.smt2"),
     ("QF_LIRA", "test1.smt2", "model1.broken.smt2"),
+    ("QF_LIRA", "LCTES_smtopt.smt2", "model.LCTES_smtopt.cvc4-broken.smt2"),
 ]
 
 BASE_DIR = "examples/"
