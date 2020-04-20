@@ -148,7 +148,7 @@ def validateModel(smtFile, modelFile, inputFile):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='QF_BV Model validator.')
+    parser = argparse.ArgumentParser(description='Model validator for QF logics with bit-vectors and linear arithemetic.')
     parser.add_argument('--smt2', type=str,
                         help='SMT-LIB v2 benchmark',
                         required = True)
