@@ -35,7 +35,7 @@ See the [pySMT documentation](https://pysmt.readthedocs.io)
 for more information about pySMT.
 
 ```
-ModelValidator.py [-h] --smt2 SMT2 --model MODEL
+./ModelValidator.py [-h] --smt2 SMT2 --model MODEL
 ```
 
 Alternatively (and on StarExec), you can use the provided wrapper script
