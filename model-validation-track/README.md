@@ -30,7 +30,7 @@ if the input model is empty.
 ### Usage
 
 The `ModelValidator.py` script uses the pySMT [pySMT](https://github.com/pysmt/pysmt)
-version packaged in this repository (pysmt.tar.xz). To run use `PYTHONPATH="pysmt" python2 ModelValidator.py`.
+version packaged in this repository (pysmt.tar.gz). To run use `PYTHONPATH="pysmt" python3 ModelValidator.py`.
 See the [pySMT documentation](https://pysmt.readthedocs.io)
 for more information about pySMT.
 
@@ -40,7 +40,7 @@ ModelValidator.py [-h] --smt2 SMT2 --model MODEL
 
 Alternatively (and on StarExec), you can use the provided wrapper script
 [process.model-validation-track](process.model-validation-track), which
-requires that the provided [pySMT version](pysmt.tar.xz) is unpacked into the
+requires that the provided [pySMT version](pysmt.tar.gz) is unpacked into the
 same directory as the script.
 
 ```
