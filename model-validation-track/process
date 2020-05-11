@@ -5,6 +5,11 @@
 
 # $1: model
 # $2: benchmark after preprocessing
-sed -i 's/^[0-9]*\.[0-9]*\/[0-9]*.[0-9]*\t//g' $1
-PYTHONPATH="pysmt" python2 ModelValidator.py --smt2 $2 --model $1
+
+# remove the StarExec timing information from each line of the solver output
+sed 's/^[0-9]*\.[0-9]*\/[0-9]*.[0-9]*\t//g' "$1" | \
+# remove success response lines from solver output
+grep -v '^success$' > ./cleanSolverOutput.txt
+
+PYTHONPATH="pysmt" python2 ModelValidator.py --smt2 $2 --model ./cleanSolverOutput.txt
 
