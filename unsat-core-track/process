@@ -173,7 +173,7 @@ if [ "$CHECK_SAT_RESPONSE" == "unsat" ]; then
 		VALIDATION_SOLVERS=(${!LOGIC})
 		echo "parsable-unsat-core=true"
 		# size of unsat core was written as comment in the first line by the benchmark scrambler
-		SIZE_OF_UNSAT_CORE=$(head -n 1 ./unsat-core-validation-script.smt2 |sed -e 's/;; parsed //'|sed -e 's/ names:\ .*//')
+		SIZE_OF_UNSAT_CORE=$(head -n 1 ./unsat-core-validation-script.smt2 |sed -e 's/;; parsed \([0-9][0-9]*\) names:.*/\1/')
 		echo "size-unsat-core=$SIZE_OF_UNSAT_CORE"
 		REDUCTION=$((NUMBER_OF_ASSERT_COMMANDS - SIZE_OF_UNSAT_CORE))
 
