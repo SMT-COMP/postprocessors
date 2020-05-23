@@ -1,7 +1,15 @@
 #!/bin/bash
 
 # Jochen Hoenicke
+
 # A simple post-processor for SMT.
+# The logic is:
+# - take the first line containing the single word sat, unsat, or unknown
+# - all other lines before are ignored ("success", warnings, error messages)
+# - if the line is sat, unsat, or unknown this is the status
+# - if no such line exists, the status is unknown.
+# - all lines after the result are ignored.
+
 
 STATUS=$(
 # remove the StarExec timing information from each line of the solver output
