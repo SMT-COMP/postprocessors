@@ -1,0 +1,2 @@
+59.97/60.01	/export/starexec/sandbox/solver/bin/starexec_run_default: line 1:  3916 Alarm clock             ./alt-ergo --no-locs-in-answers $1
+59.97/60.01	EOF

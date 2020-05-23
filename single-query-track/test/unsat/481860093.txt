@@ -1,0 +1,8 @@
+0.15/0.18	unsat
+0.15/0.18	STAT: nb_atomes=0
+0.15/0.18	STAT: nb_functions=9
+0.15/0.18	STAT: nb_predicates=0
+0.15/0.18	STAT: nb_axiomes=0
+0.15/0.18	STAT: nb_instances_EnumTrig=34
+0.15/0.18	STAT: nb_conflicting_instances=5
+0.15/0.18	EOF

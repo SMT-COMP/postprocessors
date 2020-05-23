@@ -1,0 +1,2 @@
+0.00/0.01	/export/starexec/sandbox2/solver/bin/mergesat: /lib64/libstdc++.so.6: version `CXXABI_1.3.9' not found (required by /export/starexec/sandbox2/solver/bin/mergesat)
+0.00/0.01	EOF

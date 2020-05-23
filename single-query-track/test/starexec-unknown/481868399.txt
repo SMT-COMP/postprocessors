@@ -1,0 +1,2 @@
+59.99/60.02	/export/starexec/sandbox2/solver/bin/starexec_run_default.sh: line 3: 33379 Alarm clock             ./lazybv2int --lazy --full-refinement --sat-checker --sat-checker-filter --toplevel-prop $1
+59.99/60.02	EOF

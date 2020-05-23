@@ -1,0 +1,8 @@
+12.62/12.71	sat
+12.62/12.71	STAT: nb_atomes=0
+12.62/12.71	STAT: nb_functions=425
+12.62/12.71	STAT: nb_predicates=0
+12.62/12.71	STAT: nb_axiomes=0
+12.62/12.71	STAT: nb_instances_EnumTrig=0
+12.62/12.71	STAT: nb_conflicting_instances=0
+12.62/12.71	EOF

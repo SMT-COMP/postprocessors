@@ -1,0 +1,2 @@
+59.96/60.01	possibly not sat
+59.96/60.03	EOF
