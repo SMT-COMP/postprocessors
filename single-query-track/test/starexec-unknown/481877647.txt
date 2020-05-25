@@ -1,0 +1,3 @@
+0.00/0.04	% Exception at proof search level
+0.00/0.04	User error: unrecognized logic UFDTNIRA
+0.00/0.04	EOF

@@ -1,0 +1,8 @@
+1.08/1.12	unknown
+1.08/1.12	STAT: nb_atomes=0
+1.08/1.12	STAT: nb_functions=180
+1.08/1.12	STAT: nb_predicates=0
+1.08/1.12	STAT: nb_axiomes=0
+1.08/1.12	STAT: nb_instances_EnumTrig=0
+1.08/1.12	STAT: nb_conflicting_instances=0
+1.08/1.12	EOF

@@ -1,25 +1,28 @@
 #!/bin/bash
 
-# Aaron Stump, Tjark Weber
+# Jochen Hoenicke
+
 # A simple post-processor for SMT.
+# The logic is:
+# - take the first line containing the single word sat, unsat, or unknown
+# - all other lines before are ignored ("success", warnings, error messages)
+# - if the line is sat, unsat, or unknown this is the status
+# - if no such line exists, the status is unknown.
+# - all lines after the result are ignored.
 
-set -e
-set -u
 
-# if the output file ($1) does not contain the word "sat", set SAT to 0
-SAT=1
-grep -qsw sat "$1" || SAT=0
+STATUS=$(
+# remove the StarExec timing information from each line of the solver output
+    sed 's/^[0-9]*\.[0-9]*\/[0-9]*.[0-9]*\t//g' "$1" | \
+# filter out lines containing only sat, unsat, or unknown
+    egrep -e '^\s*(sat|unsat|unknown)\s*$' | \
+# the first answer wins
+    head -1 | egrep -o '(sat|unsat|unknown)')
 
-UNSAT=1
-grep -qsw unsat "$1" || UNSAT=0
-
-UNKNOWN=1
-grep -qsw unknown "$1" || UNKNOWN=0
-
-if [[ "$SAT" -eq 1 && "$UNSAT" -eq 0 && "$UNKNOWN" -eq 0 ]]; then
+if [[ "$STATUS" == "sat" ]]; then
     # the output contains only the word "sat"
     echo "starexec-result=sat"
-elif [[ "$SAT" -eq 0 && "$UNSAT" -eq 1 && "$UNKNOWN" -eq 0 ]]; then
+elif [[ "$STATUS" == "unsat" ]]; then
     # the output contains only the word "unsat"
     echo "starexec-result=unsat"
 else
