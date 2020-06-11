@@ -15,13 +15,12 @@ unsatisfiable using a set of validating solvers built into the script.
 
 ### Setup
 
-1. Unpack all [validation solvers](validation_solvesr) and ensure that they
+1. Unpack all [validation solvers](validation_solvers) and ensure that they
    are available at
 ```bash
 ./validation_solvers/<solver>/bin/<solver>
 ```
-The solvers currently required by the script are `CVC4`, `MathSAT`, `Z3`, and
-`Vampire`.
+The solvers currently required by the script are `alt-ergo`, `bitwuzla`, `cvc4`, `mathsat`, `ultimateeliminator+mathsat`, `vampire`, `yices`, and `z3`.
 
 2. Ensure that the [scrambler](https://github.com/SMT-COMP/scrambler) is in
 the current directory as a compiled binary.
