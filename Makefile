@@ -13,7 +13,7 @@ POSTPROCESSORS = SMT-COMP-2020-single-query-post-processor.tar.gz \
 	SMT-COMP-2020-incremental-post-processor.tar.gz \
 	SMT-COMP-2020-unsat-core-post-processor.tar.gz \
 	SMT-COMP-2020-model-validation-post-processor.tar.gz
-VALIDATION_SOLVERS=cvc4 mathsat vampire yices z3
+VALIDATION_SOLVERS=alt-ergo bitwuzla cvc4 mathsat ultimateeliminator+mathsat vampire yices z3
 
 all: $(POSTPROCESSORS)
 
