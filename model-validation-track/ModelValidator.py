@@ -61,7 +61,7 @@ def readModel(parser, modelFile, inputFile):
             # benchmark without status line we assume satisfiability
             if not status:
                 print ("model_validator_status=INVALID")
-                print ("model_validator_error=the_problem_has_no_status")
+                print ("model_validator_error=solver_returned_unsat")
             sys.exit(0)
         if (current != "sat"):
             raise PysmtSyntaxError("'sat' expected", tokens.pos_info)
@@ -76,10 +76,11 @@ def readModel(parser, modelFile, inputFile):
         if (current != "("):
             raise PysmtSyntaxError("'(' expected", tokens.pos_info)
         current = tokens.consume()
-        if (current != "model"):
-            raise PysmtSyntaxError("'model' expected", tokens.pos_info)
 
-        current = tokens.consume()
+        # Backwards compatibility: skip optional model keyword
+        if (current == "model"):
+            current = tokens.consume()
+
         while current != ")":
             if (current != "("):
                 raise PysmtSyntaxError("'(' expected", tokens.pos_info)
@@ -98,13 +99,13 @@ def readSmtFile(parser, smtFile):
 
 def checkFullModel(model, symbols):
     if len(model) > len(symbols):
-        print ("model_validator_status=INVALID")
+        print ("model_validator_status=UNKNOWN")
         print ("model_validator_error=more_variables_in_model_than_input")
         sys.exit(0)
 
     for symbol in symbols:
         if not symbol in model:
-            print ("model_validator_status=INVALID")
+            print ("model_validator_status=UNKNOWN")
             print ("model_validator_error=missing_model_value")
             sys.exit(0)
 
@@ -130,18 +131,18 @@ def validateModel(smtFile, modelFile, inputFile):
         checkFullModel(model, symbols)
 
         result = formula.substitute(model).simplify()
-        if not result.is_constant():
+        if result.is_false():
             print ("model_validator_status=INVALID")
-            print ("model_validator_error=not_full_model")
-        elif not result.is_true():
-            print ("model_validator_status=INVALID")
-            print ("model_validator_error=model_does_not_evaluate_to_true")
-        else:
+            print ("model_validator_error=model_evaluates_to_false")
+        elif result.is_true():
             print ("model_validator_status=VALID")
             print ("model_validator_error=none")
             print ("starexec-result=sat")
+        else:
+            print ("model_validator_status=UNKNOWN")
+            print ("model_validator_error=not_full_model")
     except Exception as e:
-        print ("model_validator_status=INVALID")
+        print ("model_validator_status=UNKNOWN")
         print ("model_validator_error=unhandled_exception")
         print ("model_validator_exception=\"{}\"".format(str(e).replace("'", "\\'").replace('"', '\\"').replace('\n',' ')))
         sys.exit(0)
@@ -162,7 +163,7 @@ def main():
 try:
     main()
 except Exception as e:
-    print ("model_validator_status=INVALID")
+    print ("model_validator_status=UNKNOWN")
     print ("model_validator_error=toplevel_unhandled_exception")
     print ("model_validator_exception=\"{}\"".format(str(e).replace("'", "\\'").replace('"', '\\"').replace('\n',' ')))
     sys.exit(0)
