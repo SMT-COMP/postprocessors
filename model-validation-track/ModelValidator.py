@@ -69,7 +69,7 @@ def checkFullModel(model, interpretation, symbols):
 
     for symbol in symbols:
         if symbol not in model and symbol not in interpretation:
-            print ("model_validator_status=INVALID")
+            print ("model_validator_status=UNKNOWN")
             print ("model_validator_error=missing_model_value")
             sys.exit(0)
 
@@ -110,8 +110,7 @@ def validateModel(smtFile, modelFile, inputFile):
         print ("model_validator_status=UNKNOWN")
         print ("model_validator_error=unhandled_exception")
         print ("model_validator_exception=\"{}\"".format(str(e).replace("'", "\\'").replace('"', '\\"').replace('\n',' ')))
-        raise e
-    sys.exit(0)
+        sys.exit(0)
 
 
 def main():
@@ -132,5 +131,4 @@ except Exception as e:
     print ("model_validator_status=UNKNOWN")
     print ("model_validator_error=toplevel_unhandled_exception")
     print ("model_validator_exception=\"{}\"".format(str(e).replace("'", "\\'").replace('"', '\\"').replace('\n',' ')))
-    raise e
     sys.exit(0)
