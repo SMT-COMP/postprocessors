@@ -4,10 +4,17 @@ from os.path import join as path_join
 
 UNKNOWN_TEST_CASES = [
     ("QF_BV", "test0.smt2", "model0.empty.smt2"),
+    ("QF_BV", "test1.bool.smt2", "model1.bool.smt2"),
+    ("QF_BV", "test2.smt2", "model2.smt2"),
+    ("QF_BV", "test2.smt2", "model2.z3.smt2"),
+    ("QF_BV", "test3.smt2", "model3.z3.smt2"),
     ("QF_BV", "test4.smt2", "model4.unknown.smt2"),
+    ("QF_BV", "test4.smt2", "model4.smt2"),
+    ("QF_BV", "test4.smt2", "model4.malformed.smt2"),
     ("QF_BV", "test6.smt2", "model4.unknown.smt2"),
     ("QF_BV", "test6.smt2", "model0.empty.smt2"),
     ("QF_BV", "test4.smt2", "model4.sat-no-model.smt2"),
+    ("QF_LIRA", "LCTES_smtopt.smt2", "model.LCTES_smtopt.cvc4-broken.smt2"),
 ]
 
 VALID_TEST_CASES = [
@@ -21,7 +28,7 @@ VALID_TEST_CASES = [
     ("QF_BV", "test7.smt2", "model7.smt2"),
     ("QF_BV", "test8.smt2", "model8.smt2"),
     ("QF_BV", "test10.smt2", "model10.smt2"),
-    ("QF_BV", "test9.smt2", "model9.cvc4.smt2"),
+#    ("QF_BV", "test9.smt2", "model9.cvc4.smt2"),
     ("QF_LIA", "test1.smt2", "model1.smtinterpol.smt2"),
     ("QF_LIA", "test1.smt2", "model1.z3.smt2"),
     ("QF_LIA", "test1.smt2", "model1.cvc4.smt2"),
@@ -36,21 +43,14 @@ VALID_TEST_CASES = [
 ]
 
 INVALID_TEST_CASES = [
-    ("QF_BV", "test2.smt2", "model2.smt2"),
-    ("QF_BV", "test2.smt2", "model2.z3.smt2"),
-    ("QF_BV", "test3.smt2", "model3.z3.smt2"),
-    ("QF_BV", "test4.smt2", "model4.smt2"),
-    ("QF_BV", "test4.smt2", "model4.malformed.smt2"),
     ("QF_BV", "test5.smt2", "model5.cvc4.smt2"),
     ("QF_BV", "test5.smt2", "model5.z3.smt2"),
     ("QF_BV", "test5.smt2", "model6.unsat.smt2"),
     ("QF_BV", "test6.smt2", "model6.unsat.smt2"),
     ("QF_BV", "test6.smt2", "model5.cvc4.smt2"),
     ("QF_BV", "test6.smt2", "model5.z3.smt2"),
-    ("QF_BV", "test1.bool.smt2", "model1.bool.smt2"),
-    ("QF_BV", "test9.smt2", "model9.z3.smt2"),
+#    ("QF_BV", "test9.smt2", "model9.z3.smt2"),
     ("QF_LIRA", "test1.smt2", "model1.broken.smt2"),
-    ("QF_LIRA", "LCTES_smtopt.smt2", "model.LCTES_smtopt.cvc4-broken.smt2"),
 ]
 
 BASE_DIR = "examples/"
