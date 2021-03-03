@@ -9,3 +9,15 @@ This repository contains postprocessors for SMT-COMP.
 2. Create a tarball with the process wrapper script in the . directory of the tarball.
 
 SMT-COMP 2020 Model validator (experimental)
+
+## Docker script
+
+The postprocessors are now build using a docker script.
+
+```
+cd docker
+./create-docker.sh
+./build-docker.sh
+ls -l *.tar.gz
+```
+
