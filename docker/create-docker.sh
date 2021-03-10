@@ -1,6 +1,6 @@
 #!/bin/sh
 
-rm -rf scramblere postprocessors
+rm -rf scrambler postprocessors
 cp -a ../../scrambler .
 rm -rf ./scrambler/.git
 make -C scrambler cleanall
