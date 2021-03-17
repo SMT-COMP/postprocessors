@@ -1,0 +1,10 @@
+SMT-COMP*.tar.gz
+docker/SMT-COMP*.tar.gz
+docker/scrambler
+docker/postprocessors
+model-validation-track/ModelValidator
+model-validation-track/ModelValidator.spec
+model-validation-track/__pycache__/
+model-validation-track/build/
+model-validation-track/dist/
+unsat-core-track/scrambler

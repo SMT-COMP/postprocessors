@@ -2,10 +2,26 @@
 
 This repository contains postprocessors for SMT-COMP.
 
-- adding a postprocessor to starexec:
+## Building
 
-1. https://wiki.uiowa.edu/display/stardev/User+Guide#UserGuide-Creatingnewpost-processors
+The postprocessors are now build using a docker script.  Checkout the
+scrambler and the postprocessors in the same directory and run the
+scripts in the docker sub-directory.
 
-2. Create a tarball with the process wrapper script in the . directory of the tarball.
+```
+git clone https://github.com/SMT-COMP/scrambler
+git clone https://github.com/SMT-COMP/postprocessors
+cd postprocessors/docker
+./create-docker.sh
+./build-docker.sh
+ls -l *.tar.gz
+```
 
-SMT-COMP 2020 Model validator (experimental)
+## Installing on StarExec
+
+Note that only leaders may upload post-processors to starexec, see
+the [StarExec Wiki].
+
+The tarballs created in the docker directory can be uploaded directly.
+
+[StarExec Wiki]: https://wiki.uiowa.edu/display/stardev/User+Guide#UserGuide-Creatingnewpost-processors
