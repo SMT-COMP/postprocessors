@@ -18,6 +18,10 @@ UNKNOWN_TEST_CASES = [
 ]
 
 VALID_TEST_CASES = [
+    ("QF_UF", "test0.smt2", "model0-z3.smt2"),
+    ("QF_UF", "test0.smt2", "model0-smtinterpol.smt2"),
+    ("QF_UF", "test1.smt2", "model1-z3.smt2"),
+    ("QF_UF", "test1.smt2", "model1-smtinterpol.smt2"),
     ("QF_BV", "test1.smt2", "model1.cvc4.smt2"),
     ("QF_BV", "test1.smt2", "model1.z3.smt2"),
     ("QF_BV", "test1let.smt2", "model1.cvc4.smt2"),
@@ -82,5 +86,8 @@ for division, problem, model in INVALID_TEST_CASES:
     print("testing INVALID {} problem {} with model {}...".format(division, problem, model))
     res, msg = validate(path_join(BASE_DIR, division, problem),
                         path_join(BASE_DIR, division, model), "INVALID")
-    assert res, (division, problem, model, msg)
-    print("OK")
+    if res:
+        print("OK")
+    else:
+        print("FAILED!")
+        print((division, problem, model, msg))

@@ -5,41 +5,24 @@ from os import path
 from pysmt.shortcuts import get_env
 from pysmt.smtlib.parser import SmtLibParser, Tokenizer
 from pysmt.exceptions import PysmtSyntaxError
+from pysmt.smtlib.utils import SmtLibModelValidationSimplifier
 
-
-def parseDefineFun(parser, tokens):
-    current = tokens.consume()
-
-    if (current != "define-fun"):
-        raise PysmtSyntaxError("'define-fun' expected", tokens.pos_info)
-    var = parser.get_expression(tokens)
-    if (not var.is_symbol()):
-        raise PysmtSyntaxError("Symbol expected", tokens.pos_info)
-    namedparams = parser.parse_named_params(tokens, "define-fun")
-    if (namedparams):
-        raise PysmtSyntaxError("'()' expected", tokens.pos_info)
-    rtype = parser.parse_type(tokens, "define-fun")
-    ebody = parser.get_expression(tokens)
-    if (not ebody.is_constant()):
-        raise PysmtSyntaxError("Constant expected", tokens.pos_info)
-    current = tokens.consume()
-    return (var, ebody)
-
+get_env().allow_empty_var_names = True
 
 def readModel(parser, modelFile, inputFile):
     with open(modelFile) as script:
-        model = {}
-        symbols = parser.env.formula_manager.symbols
-        parser.cache.update(symbols)
-        tokens = Tokenizer(script, interactive=parser.interactive)
-        res = []
-        current = tokens.consume()
+        lino = 0
+        for line in script:
+            lino += 1
+            read_status = line.strip()
+            if read_status != 'success':
+                break
 
-        if (current == "unknown"):
+        if (read_status == "unknown"):
             print ("model_validator_status=UNKNOWN")
             print ("model_validator_error=solver_returned_unknown")
             sys.exit(0)
-        if (current == "unsat"):
+        if (read_status == "unsat"):
             status = None
             with open(inputFile, 'r') as infile:
                 for line in infile:
@@ -63,31 +46,12 @@ def readModel(parser, modelFile, inputFile):
                 print ("model_validator_status=INVALID")
                 print ("model_validator_error=solver_returned_unsat")
             sys.exit(0)
-        if (current != "sat"):
-            raise PysmtSyntaxError("'sat' expected", tokens.pos_info)
+        if (read_status != "sat"):
+            raise PysmtSyntaxError("'sat' expected at line %d" % lino)
         # Return UNKNOWN if the output is only "sat" and does not contain a model
-        try:
-            current = tokens.consume_maybe()
-        except StopIteration:
-            print ("model_validator_status=UNKNOWN")
-            print ("model_validator_error=no_output")
-            sys.exit(0)
 
-        if (current != "("):
-            raise PysmtSyntaxError("'(' expected", tokens.pos_info)
-        current = tokens.consume()
-
-        # Backwards compatibility: skip optional model keyword
-        if (current == "model"):
-            current = tokens.consume()
-
-        while current != ")":
-            if (current != "("):
-                raise PysmtSyntaxError("'(' expected", tokens.pos_info)
-            (var, val) = parseDefineFun(parser, tokens)
-            model[var] = val
-            current = tokens.consume()
-        return model
+        model, interpretation = parser.parse_model(script)
+        return model, interpretation
 
 
 def readSmtFile(parser, smtFile):
@@ -97,14 +61,14 @@ def readSmtFile(parser, smtFile):
         return (formula, script.get_declared_symbols())
 
 
-def checkFullModel(model, symbols):
-    if len(model) > len(symbols):
+def checkFullModel(model, interpretation, symbols):
+    if len(model) + len(interpretation) > len(symbols):
         print ("model_validator_status=UNKNOWN")
         print ("model_validator_error=more_variables_in_model_than_input")
         sys.exit(0)
 
     for symbol in symbols:
-        if not symbol in model:
+        if symbol not in model and symbol not in interpretation:
             print ("model_validator_status=UNKNOWN")
             print ("model_validator_error=missing_model_value")
             sys.exit(0)
@@ -126,11 +90,12 @@ def validateModel(smtFile, modelFile, inputFile):
         parser = SmtLibParser()
 
         (formula, symbols) = readSmtFile(parser, smtFile)
-        model = readModel(parser, modelFile, inputFile)
+        model, interpretation = readModel(parser, modelFile, inputFile)
 
-        checkFullModel(model, symbols)
+        checkFullModel(model, interpretation, symbols)
+        simplifier = SmtLibModelValidationSimplifier()
+        result = simplifier.simplify(formula.substitute(model, interpretation))
 
-        result = formula.substitute(model).simplify()
         if result.is_false():
             print ("model_validator_status=INVALID")
             print ("model_validator_error=model_evaluates_to_false")
