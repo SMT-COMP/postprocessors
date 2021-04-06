@@ -3,6 +3,11 @@ import subprocess
 from os.path import join as path_join
 
 UNKNOWN_TEST_CASES = [
+    ("QF_UF", "test0.smt2", "model0.0.smt2"),
+    ("QF_UF", "test2.smt2", "model2.0.smt2"),
+    ("QF_UF", "test2.smt2", "model2.3.smt2"),
+    ("QF_UF", "test2.smt2", "model2.4.smt2"),
+    ("QF_UF", "test2.smt2", "model2.8.smt2"),
     ("QF_BV", "test0.smt2", "model0.empty.smt2"),
     ("QF_BV", "test1.bool.smt2", "model1.bool.smt2"),
     ("QF_BV", "test2.smt2", "model2.smt2"),
@@ -20,10 +25,17 @@ UNKNOWN_TEST_CASES = [
 ]
 
 VALID_TEST_CASES = [
+    ("QF_UF", "test0.smt2", "model0.1.smt2"),
+    ("QF_UF", "test0.smt2", "model0.2.smt2"),
     ("QF_UF", "test0.smt2", "model0-z3.smt2"),
     ("QF_UF", "test0.smt2", "model0-smtinterpol.smt2"),
     ("QF_UF", "test1.smt2", "model1-z3.smt2"),
     ("QF_UF", "test1.smt2", "model1-smtinterpol.smt2"),
+    ("QF_UF", "test2.smt2", "model2.1.smt2"),
+    ("QF_UF", "test2.smt2", "model2.2.smt2"),
+    ("QF_UF", "test2.smt2", "model2.5.smt2"),
+    ("QF_UF", "test2.smt2", "model2.6.smt2"),
+#    ("QF_UF", "test2.smt2", "model2.7.smt2"),
     ("QF_BV", "test1.smt2", "model1.cvc4.smt2"),
     ("QF_BV", "test1.smt2", "model1.z3.smt2"),
     ("QF_BV", "test1let.smt2", "model1.cvc4.smt2"),
