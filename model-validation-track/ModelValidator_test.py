@@ -35,7 +35,7 @@ VALID_TEST_CASES = [
     ("QF_UF", "test2.smt2", "model2.2.smt2"),
     ("QF_UF", "test2.smt2", "model2.5.smt2"),
     ("QF_UF", "test2.smt2", "model2.6.smt2"),
-#    ("QF_UF", "test2.smt2", "model2.7.smt2"),
+    ("QF_UF", "test2.smt2", "model2.7.smt2"),
     ("QF_BV", "test1.smt2", "model1.cvc4.smt2"),
     ("QF_BV", "test1.smt2", "model1.z3.smt2"),
     ("QF_BV", "test1let.smt2", "model1.cvc4.smt2"),
