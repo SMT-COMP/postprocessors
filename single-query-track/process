@@ -4,8 +4,9 @@
 
 # A simple post-processor for SMT.
 # The logic is:
-# - take the first line containing the single word sat, unsat, or unknown
-# - all other lines before are ignored ("success", warnings, error messages)
+# - remove success outputs (they're ignored for now)
+# - take the first line
+# - all other lines after it ignored
 # - if the line is sat, unsat, or unknown this is the status
 # - if no such line exists, the status is unknown.
 # - all lines after the result are ignored.
@@ -14,10 +15,10 @@
 STATUS=$(
 # remove the StarExec timing information from each line of the solver output
     sed 's/^[0-9]*\.[0-9]*\/[0-9]*.[0-9]*\t//g' "$1" | \
-# filter out lines containing only sat, unsat, or unknown
-    egrep -e '^\s*(sat|unsat|unknown)\s*$' | \
+# remove empty lines and lines containing only success or a comment
+    egrep -v -e '^\s*(success|;.*)?\s*$' | \
 # the first answer wins
-    head -1 | egrep -o '(sat|unsat|unknown)')
+    head -1 | sed 's/^\s*\([a-z]\+\)\b.*/\1/')
 
 if [[ "$STATUS" == "sat" ]]; then
     # the output contains only the word "sat"
