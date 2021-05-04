@@ -17,8 +17,8 @@ STATUS=$(
     sed 's/^[0-9]*\.[0-9]*\/[0-9]*.[0-9]*\t//g' "$1" | \
 # remove empty lines and lines containing only success or a comment
     egrep -v -e '^\s*(success|;.*)?\s*$' | \
-# the first answer wins
-    head -1 | sed 's/^\s*\([a-z]\+\)\b.*/\1/')
+# the first answer wins, strip space around it.
+    head -1 | sed -E 's/^[[:space:]]*([[:alnum:]]+)[[:space:]]*$/\1/')
 
 if [[ "$STATUS" == "sat" ]]; then
     # the output contains only the word "sat"
