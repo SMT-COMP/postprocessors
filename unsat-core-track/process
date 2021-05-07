@@ -165,7 +165,7 @@ if [ "$CHECK_SAT_RESPONSE" == "unsat" ]; then
 		REDUCTION="0"
 	else
 		# extract the line with the set-logic command from the input SMT script
-		SET_LOGIC_COMMAND=$(sed -n '2p;3q' "$2")
+		SET_LOGIC_COMMAND=$(sed -n '3p;4q' "$2")
 		# extract the string that states the logic
 		LOGIC=$(echo "$SET_LOGIC_COMMAND" |sed -e "s/^(set-logic\\ //" -e "s/)$//")
 		# use the lists from this beginning of this bash script to determine the validating solvers
