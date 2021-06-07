@@ -15,7 +15,7 @@ POSTPROCESSORS = SMT-COMP-2021-single-query-post-processor.tar.gz \
 	SMT-COMP-2021-model-validation-post-processor.tar.gz
 VALIDATION_SOLVERS=alt-ergo bitwuzla cvc4 mathsat ultimateeliminator+mathsat vampire yices z3
 
-all: $(POSTPROCESSORS)
+all: $(POSTPROCESSORS) test
 
 # targets to prepare StarExec postprocessors
 
@@ -42,7 +42,10 @@ SMT-COMP-2021-model-validation-post-processor.tar.gz: model-validation-track/pro
 	cp model-validation-track/dist/ModelValidator model-validation-track
 	tar -C model-validation-track -czf $@ process ModelValidator
 
-.PHONY: all clean
+test:
+	(cd unsat-core-track; ./run-tests.sh)
+
+.PHONY: all clean test
 
 clean:
 	rm -rf model-validation-track/pysmt
