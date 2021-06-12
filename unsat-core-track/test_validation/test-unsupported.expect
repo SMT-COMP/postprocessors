@@ -1,0 +1,6 @@
+check-sat-result-is-erroneous=0
+starexec-result=unsat
+number-of-assert-commands=15
+parsable-unsat-core=false
+result-is-erroneous=0
+reduction=0

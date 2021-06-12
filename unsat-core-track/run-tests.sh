@@ -41,6 +41,17 @@ for file in test_negative/*-uc.smt2; do
     fi
 done
 
+for file in test_validation/*.smt2; do
+    corescript=${file}
+    coreoutput=$(dirname ${file})/$(basename ${file} .smt2).res
+    expected=$(dirname ${file})/$(basename ${file} .smt2).expect
+    if [[ "$(./process ${coreoutput} ${corescript} | grep -v 'ucpp-version=' | \
+	    diff -q $expected -)" ]] ; then
+        echo "Unexpected output for ${file}"
+        errors=true
+    fi
+done
+
 
 if [[ "${errors}" != false ]]; then
     echo "There were errors: see ${tmpdir}"
