@@ -3,13 +3,13 @@
 # Matthias Heizmann (heizmann@informatik.uni-freiburg.de)
 # SMT-COMP 2018 post-processor for the Unsat-core Track
 
-# This postprocessor contains a copy several SMT solvers that are located in 
+# This postprocessor contains a copy several SMT solvers that are located in
 # the validation_solvers subfolder
 
 # This bash script mainly does the following
 # 1. Examine if the check-sat result of the solver was "sat".
 #    (would be considered as an error)
-# 2. Determine the difference between the number of assert commands in the 
+# 2. Determine the difference between the number of assert commands in the
 #     input and the number of names in the unsat-core which was returned by
 #     the solver. We call this difference the *reduction*.
 # 3. Write the "unsat-core-validation-script.smt2" SMT script. This script
@@ -17,11 +17,11 @@
 #     corresponding named terms were in the unsat-core returned by the solver.
 # 4. Use other solvers to validate the unsat core. We use the validation
 #     solvers to check the unsat-core-validation-script.smt2. We consider
-#     the unsat-core valid if the number of validation solvers that return 
+#     the unsat-core valid if the number of validation solvers that return
 #     'sat' is smaller then or equal to the number of validation solvers that
 #     return 'unsat'.
 
-# The validation solvers that were added to this post-processor are the 
+# The validation solvers that were added to this post-processor are the
 # main track submissions of the following solvers.
 # * CVC4
 #     https://www.starexec.org/starexec/secure/details/solver.jsp?id=23737
@@ -147,7 +147,7 @@ if [ "$CHECK_SAT_RESPONSE" == "sat" ]; then
 elif [ "$CHECK_SAT_RESPONSE" == "unsat" ]; then
 	echo "check-sat-result-is-erroneous=0"
 	echo "starexec-result=$CHECK_SAT_RESPONSE"
-else 
+else
 	echo "check-sat-result-is-erroneous=0"
 	echo "starexec-result=starexec-unknown"
 fi
@@ -163,72 +163,71 @@ if [ "$CHECK_SAT_RESPONSE" == "unsat" ]; then
 		echo "parsable-unsat-core=false"
 		REDUCTION="0"
 	else
-	# remove all assert commands that are not in unsat core and remove named terms, do not scramble again (seed 0)
-	./scrambler -seed 0 -term_annot false -core ./cleanSolverOutput.txt < "$2" > ./unsat-core-validation-script.smt2 2>&1
+		# remove all assert commands that are not in unsat core and remove named terms, do not scramble again (seed 0)
+		./scrambler -seed 0 -term_annot false -core ./cleanSolverOutput.txt < "$2" > ./unsat-core-validation-script.smt2 2>&1
 
-	if [[ $(head -n 1 ./unsat-core-validation-script.smt2|grep "ERROR") ]]; then
-		# if we cannot parse the solvers output (e.g., not output because of timeout)
-		# this is not considered as an erroneous result but the reduction is set to 0
-		echo "parsable-unsat-core=false"
-		REDUCTION="0"
-	else
-		# extract the line with the set-logic command from the input SMT script
-		SET_LOGIC_COMMAND=$(sed -n '/^(set-logic/{p;q;}' "$2")
-		# extract the string that states the logic
-		LOGIC=$(echo "$SET_LOGIC_COMMAND" |sed -e "s/^(set-logic\\ //" -e "s/)$//")
-		# use the lists from this beginning of this bash script to determine the validating solvers
-		declare VALIDATION_SOLVERS
-		VALIDATION_SOLVERS=(${!LOGIC})
-		echo "parsable-unsat-core=true"
-		# size of unsat core was written as comment in the first line by the benchmark scrambler
-		SIZE_OF_UNSAT_CORE=$(head -n 1 ./unsat-core-validation-script.smt2 |sed -e 's/;; parsed \([0-9][0-9]*\) names:.*/\1/')
-		echo "size-unsat-core=$SIZE_OF_UNSAT_CORE"
-		REDUCTION=$((NUMBER_OF_ASSERT_COMMANDS - SIZE_OF_UNSAT_CORE))
-
-		echo "validation-solvers=${#VALIDATION_SOLVERS[@]}"
-		UNSAT_CORE_CONFIRMATIONS="0"
-		UNSAT_CORE_REJECTIONS="0"
-		for (( i=0; i<${#VALIDATION_SOLVERS[@]}; i++ ));
-		do
-			TIME_START=$(date +%s)
-			VALIDATION_SOLVER=${VALIDATION_SOLVERS[i]}
-			VALIDATION_SOLVER_PATH="validation_solvers/$VALIDATION_SOLVER/bin"
-			pushd $VALIDATION_SOLVER_PATH > /dev/null
-			timeout -k 10 $VALIDATION_TIMOUT ./starexec_run_default ./../../../unsat-core-validation-script.smt2 > ./../../../validationOutput.txt 2>/dev/null
-			popd > /dev/null
-			TIME_END=$(date +%s)
-			RUNTIME=$((TIME_END-TIME_START))
-			VALIDATION_CHECK_SAT_RESPONSE=$(head -n 1 ./validationOutput.txt|xargs)
-			if [ "$VALIDATION_CHECK_SAT_RESPONSE" == "sat" ] || [ "$VALIDATION_CHECK_SAT_RESPONSE" == "unsat" ]; then
-				VALIDATION_CHECK_SAT_RESULT=$VALIDATION_CHECK_SAT_RESPONSE
-			else
-				VALIDATION_CHECK_SAT_RESULT="unknown"
-			fi
-			echo "validation-check-sat-result_${VALIDATION_SOLVERS[$i]}=$VALIDATION_CHECK_SAT_RESULT"
-			echo "validation-check-sat-time_${VALIDATION_SOLVERS[$i]}=$RUNTIME"
-			if [ "$VALIDATION_CHECK_SAT_RESULT" == "sat" ]; then
-				UNSAT_CORE_REJECTIONS=$((UNSAT_CORE_REJECTIONS + 1))
-			fi
-			if [ "$VALIDATION_CHECK_SAT_RESULT" == "unsat" ]; then
-				UNSAT_CORE_CONFIRMATIONS=$((UNSAT_CORE_CONFIRMATIONS + 1))
-			fi
-		done
-		echo "unsat-core-rejections=$UNSAT_CORE_REJECTIONS"
-		echo "unsat-core-confirmations=$UNSAT_CORE_CONFIRMATIONS"
-		if [ "$UNSAT_CORE_REJECTIONS" -gt "$UNSAT_CORE_CONFIRMATIONS" ]; 
-		then
-			UNSAT_CORE_VALIDATED="false"
-			RESULT_IS_ERRONEOUS="1"
+		if [[ $(head -n 1 ./unsat-core-validation-script.smt2|grep "ERROR") ]]; then
+			# if we cannot parse the solvers output (e.g., not output because of timeout)
+			# this is not considered as an erroneous result but the reduction is set to 0
+			echo "parsable-unsat-core=false"
 			REDUCTION="0"
-		else 
-			UNSAT_CORE_VALIDATED="true"
+		else
+			# extract the line with the set-logic command from the input SMT script
+			SET_LOGIC_COMMAND=$(sed -n '/^(set-logic/{p;q;}' "$2")
+			# extract the string that states the logic
+			LOGIC=$(echo "$SET_LOGIC_COMMAND" |sed -e "s/^(set-logic\\ //" -e "s/)$//")
+			# use the lists from this beginning of this bash script to determine the validating solvers
+			declare VALIDATION_SOLVERS
+			VALIDATION_SOLVERS=(${!LOGIC})
+			echo "parsable-unsat-core=true"
+			# size of unsat core was written as comment in the first line by the benchmark scrambler
+			SIZE_OF_UNSAT_CORE=$(head -n 1 ./unsat-core-validation-script.smt2 |sed -e 's/;; parsed \([0-9][0-9]*\) names:.*/\1/')
+			echo "size-unsat-core=$SIZE_OF_UNSAT_CORE"
+			REDUCTION=$((NUMBER_OF_ASSERT_COMMANDS - SIZE_OF_UNSAT_CORE))
+
+			echo "validation-solvers=${#VALIDATION_SOLVERS[@]}"
+			UNSAT_CORE_CONFIRMATIONS="0"
+			UNSAT_CORE_REJECTIONS="0"
+			for (( i=0; i<${#VALIDATION_SOLVERS[@]}; i++ ));
+			do
+				TIME_START=$(date +%s)
+				VALIDATION_SOLVER=${VALIDATION_SOLVERS[i]}
+				VALIDATION_SOLVER_PATH="validation_solvers/$VALIDATION_SOLVER/bin"
+				pushd $VALIDATION_SOLVER_PATH > /dev/null
+				timeout -k 10 $VALIDATION_TIMOUT ./starexec_run_default ./../../../unsat-core-validation-script.smt2 > ./../../../validationOutput.txt 2>/dev/null
+				popd > /dev/null
+				TIME_END=$(date +%s)
+				RUNTIME=$((TIME_END-TIME_START))
+				VALIDATION_CHECK_SAT_RESPONSE=$(head -n 1 ./validationOutput.txt|xargs)
+				if [ "$VALIDATION_CHECK_SAT_RESPONSE" == "sat" ] || [ "$VALIDATION_CHECK_SAT_RESPONSE" == "unsat" ]; then
+					VALIDATION_CHECK_SAT_RESULT=$VALIDATION_CHECK_SAT_RESPONSE
+				else
+					VALIDATION_CHECK_SAT_RESULT="unknown"
+				fi
+				echo "validation-check-sat-result_${VALIDATION_SOLVERS[$i]}=$VALIDATION_CHECK_SAT_RESULT"
+				echo "validation-check-sat-time_${VALIDATION_SOLVERS[$i]}=$RUNTIME"
+				if [ "$VALIDATION_CHECK_SAT_RESULT" == "sat" ]; then
+					UNSAT_CORE_REJECTIONS=$((UNSAT_CORE_REJECTIONS + 1))
+				fi
+				if [ "$VALIDATION_CHECK_SAT_RESULT" == "unsat" ]; then
+					UNSAT_CORE_CONFIRMATIONS=$((UNSAT_CORE_CONFIRMATIONS + 1))
+				fi
+			done
+			echo "unsat-core-rejections=$UNSAT_CORE_REJECTIONS"
+			echo "unsat-core-confirmations=$UNSAT_CORE_CONFIRMATIONS"
+			if [ "$UNSAT_CORE_REJECTIONS" -gt "$UNSAT_CORE_CONFIRMATIONS" ];
+			then
+				UNSAT_CORE_VALIDATED="false"
+				RESULT_IS_ERRONEOUS="1"
+				REDUCTION="0"
+			else
+				UNSAT_CORE_VALIDATED="true"
+			fi
+			echo "unsat-core-validated=$UNSAT_CORE_VALIDATED"
 		fi
-		echo "unsat-core-validated=$UNSAT_CORE_VALIDATED"
-		
-	fi
 	fi
 else
-		REDUCTION="0"
+	REDUCTION="0"
 fi
 
 echo "result-is-erroneous=$RESULT_IS_ERRONEOUS"
