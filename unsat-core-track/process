@@ -22,19 +22,8 @@
 #     return 'unsat'.
 
 # The validation solvers that were added to this post-processor are the
-# main track submissions of the following solvers.
-# * CVC4
-#     https://www.starexec.org/starexec/secure/details/solver.jsp?id=23737
-# * MathSAT
-#     https://www.starexec.org/starexec/secure/details/solver.jsp?id=23680
-#     - Changed the script name from mathsat/bin/starexec_run_default.sh to
-#       mathsat/bin/starexec_run_default
-# * Vampire
-#     https://www.starexec.org/starexec/secure/details/solver.jsp?id=23703
-#     - Changed the script name from vampire/bin/starexec_run_vampire_smtcomp
-#       to vampire/bin/starexec_run_default
-# * Z3
-#     https://www.starexec.org/starexec/secure/details/solver.jsp?id=23470
+# main track submissions or fixed versions of solvers submitted to
+# SMT-COMP 2021 or entered by the organizers.
 
 
 # $1: solver output
@@ -56,75 +45,85 @@ set -u
 echo "ucpp-version=2021v0"
 
 # set validating solvers for each logic
-ABV="cvc4 z3 ultimateeliminator+mathsat"
-ABVFP="cvc4 ultimateeliminator+mathsat"
-ABVFPLRA="cvc4 ultimateeliminator+mathsat"
-ALIA="cvc4 vampire z3"
-#ANIA="cvc4 vampire z3"
-AUFBVDTLIA="cvc4 z3"
-AUFDTLIA="cvc4 vampire z3"
-AUFDTLIRA="cvc4 vampire alt-ergo"
-AUFDTNIRA="cvc4 vampire alt-ergo"
-AUFFPDTLIRA="cvc4 ultimateeliminator+mathsat"
-AUFLIA="cvc4 vampire z3"
-AUFLIRA="cvc4 vampire z3"
-AUFNIA="cvc4 vampire z3"
-AUFNIRA="cvc4 vampire z3"
-BV="cvc4 z3 ultimateeliminator+mathsat"
-BVFP="cvc4 ultimateeliminator+mathsat"
-BVFPLRA="cvc4 ultimateeliminator+mathsat"
-FP="cvc4 z3 ultimateeliminator+mathsat"
-FPLRA="cvc4 ultimateeliminator+mathsat"
-LIA="cvc4 ultimateeliminator+mathsat z3"
-LRA="cvc4 vampire z3"
-NIA="cvc4 vampire z3"
-NRA="cvc4 vampire z3"
-QF_ABV="cvc4 z3 yices"
-QF_ABVFP="cvc4 z3 mathsat"
-QF_ABVFPLRA="cvc4 mathsat"
-QF_ALIA="cvc4 z3 yices"
-QF_ANIA="cvc4 mathsat z3"
-QF_AUFBV="cvc4 z3 yices"
-QF_AUFLIA="cvc4 z3 yices"
-QF_AUFNIA="cvc4 mathsat z3"
-QF_AX="cvc4 z3 yices"
-QF_BV="cvc4 z3 mathsat"
-QF_BVFP="cvc4 z3 mathsat"
-QF_BVFPLRA="cvc4 z3 mathsat"
-QF_DT="cvc4 z3 alt-ergo"
-QF_FP="cvc4 z3 mathsat"
-QF_FPLRA="cvc4 z3 mathsat"
-QF_IDL="cvc4 z3 yices"
-QF_LIA="cvc4 z3 yices"
-QF_LIRA="cvc4 z3 yices"
-QF_LRA="cvc4 z3 yices"
-QF_NIA="cvc4 mathsat z3"
-QF_NIRA="cvc4 mathsat z3"
-QF_NRA="cvc4 mathsat z3"
-QF_RDL="cvc4 z3 yices"
-#QF_S="cvc4"
-#QF_SLIA="cvc4"
-QF_UF="cvc4 z3 yices"
-QF_UFBV="cvc4 z3 yices"
-QF_UFFP="cvc4 mathsat bitwuzla"
-QF_UFIDL="cvc4 z3 yices"
-QF_UFLIA="cvc4 z3 yices"
-QF_UFLRA="cvc4 z3 yices"
-QF_UFNIA="cvc4 z3 mathsat"
-QF_UFNRA="cvc4 z3 mathsat"
-UF="cvc4 vampire z3"
-UFBV="cvc4 z3 ultimateeliminator+mathsat"
-UFDT="cvc4 vampire z3"
-UFDTLIA="cvc4 vampire z3"
-UFDTLIRA="cvc4 alt-ergo"
-UFDTNIA="cvc4 vampire alt-ergo"
-UFDTNIRA="cvc4 vampire alt-ergo"
-UFFPDTLIRA="cvc4 ultimateeliminator+mathsat"
-UFFPDTNIRA="cvc4 ultimateeliminator+mathsat"
-UFIDL="cvc4 vampire z3"
-UFLIA="cvc4 vampire z3"
-UFLRA="cvc4 vampire z3"
-UFNIA="cvc4 vampire z3"
+ABV="cvc5 z3 ultimateeliminator+mathsat"
+ABVFP="cvc5 ultimateeliminator+mathsat"
+ABVFPLRA="cvc5 ultimateeliminator+mathsat"
+ALIA="cvc5 z3 smtinterpol"
+AUFBV="cvc5 z3 ultimateeliminator+mathsat"
+AUFBVDTLIA="cvc5"
+AUFBVDTNIA="cvc5"
+AUFBVFP="cvc5 ultimateeliminator+mathsat"
+AUFDTLIA="cvc5 vampire"
+AUFDTLIRA="cvc5 vampire"
+AUFDTNIRA="cvc5 vampire"
+AUFFPDTLIRA="cvc5"
+AUFFPDTNIRA="cvc5"
+AUFLIA="cvc5 vampire z3"
+AUFLIRA="cvc5 vampire z3"
+AUFNIA="cvc5 vampire z3"
+AUFNIRA="cvc5 vampire z3"
+BV="cvc5 z3 yices2qs"
+BVFP="cvc5 ultimateeliminator+mathsat"
+BVFPLRA="cvc5 ultimateeliminator+mathsat"
+FP="cvc5 z3 ultimateeliminator+mathsat"
+FPLRA="cvc5 ultimateeliminator+mathsat"
+LIA="cvc5 ultimateeliminator+mathsat vampire"
+LRA="cvc5 vampire z3"
+NIA="cvc5 z3 vampire"
+NRA="cvc5 z3 yices2qs"
+QF_ABV="bitwuzla yices2 mathsat"
+QF_ABVFP="bitwuzla cvc5 mathsat"
+QF_ABVFPLRA="cvc5 mathsat colibri"
+QF_ALIA="mathsat z3 yices2"
+QF_ANIA="cvc5 mathsat z3"
+QF_AUFBV="yices2 mathsat bitwuzla"
+QF_AUFBVFP="mathsat bitwuzla"
+QF_AUFLIA="cvc5 z3 yices2"
+QF_AUFNIA="cvc5 mathsat z3"
+QF_AX="cvc5 z3 yices2"
+QF_BV="yices2 bitwuzla cvc5"
+QF_BVFP="bitwuzla cvc5 mathsat"
+QF_BVFPLRA="bitwuzla cvc5 mathsat"
+QF_DT="cvc5 z3 smtinterpol"
+QF_FP="bitwuzla cvc5 mathsat"
+QF_FPLRA="bitwuzla colibri mathsat"
+QF_IDL="yicesls z3 cvc5"
+QF_LIA="cvc5 mathsat yices2"
+QF_LIRA="cvc5 z3 yices2"
+QF_LRA="cvc5 yices2 opensmt"
+QF_NIA="cvc5 mathsat z3"
+QF_NIRA="cvc5 smtrat z3"
+QF_NRA="cvc5 yices2 z3"
+QF_RDL="cvc5 z3 yices2"
+QF_S="cvc5 z3"
+QF_SLIA="cvc5 z3"
+QF_SNIA="cvc5"
+QF_UF="cvc5 z3 yices2"
+QF_UFBV="bitwuzla yices2 cvc5"
+QF_UFDT="cvc5 z3 smtinterpol"
+QF_UFDTLIRA="cvc5 smtinterpol"
+QF_UFFP="cvc5 bitwuzla colibri"
+QF_UFFPDTLIRA="cvc5"
+QF_UFIDL="cvc5 z3 yices2"
+QF_UFLIA="cvc5 z3 yices2"
+QF_UFLRA="cvc5 z3 yices2"
+QF_UFNIA="cvc5 z3 mathsat"
+QF_UFNRA="cvc5 z3 mathsat"
+UF="cvc5 vampire iprover"
+UFBV="cvc5 z3 ultimateeliminator+mathsat"
+UFBVFP="cvc5 ultimateeliminator+mathsat"
+UFBVLIA="cvc5 ultimateeliminator+mathsat"
+UFDT="cvc5 vampire iprover"
+UFDTLIA="cvc5 vampire iprover"
+UFDTLIRA="cvc5 vampire iprover"
+UFDTNIA="cvc5 vampire"
+UFDTNIRA="cvc5 vampire"
+UFFPDTLIRA="cvc5"
+UFFPDTNIRA="cvc5"
+UFIDL="cvc5 vampire z3"
+UFLIA="cvc5 vampire z3"
+UFLRA="cvc5 vampire z3"
+UFNIA="cvc5 vampire z3"
 
 # count number of assert commands
 NUMBER_OF_ASSERT_COMMANDS=$(grep -c assert "$2")
@@ -193,9 +192,11 @@ if [ "$CHECK_SAT_RESPONSE" == "unsat" ]; then
 				TIME_START=$(date +%s)
 				VALIDATION_SOLVER=${VALIDATION_SOLVERS[i]}
 				VALIDATION_SOLVER_PATH="validation_solvers/$VALIDATION_SOLVER/bin"
+				mkdir output
 				pushd $VALIDATION_SOLVER_PATH > /dev/null
-				timeout -k 10 $VALIDATION_TIMOUT ./starexec_run_default ./../../../unsat-core-validation-script.smt2 > ./../../../validationOutput.txt 2>/dev/null
+				timeout -k 10 $VALIDATION_TIMOUT ./starexec_run_default ./../../../unsat-core-validation-script.smt2 ./../../../output | grep -v 'success' > ./../../../validationOutput.txt 2>/dev/null
 				popd > /dev/null
+				rm -rf output
 				TIME_END=$(date +%s)
 				RUNTIME=$((TIME_END-TIME_START))
 				VALIDATION_CHECK_SAT_RESPONSE=$(head -n 1 ./validationOutput.txt|xargs)

@@ -1,0 +1,15 @@
+Solver,StarExec ID
+bitwuzla,33469
+colibri,33750
+cvc5,33471
+iprover,33743
+mathsat,33747
+opensmt,33744
+smtinterpol,33478
+smtrat,33481
+ultimateeliminator+mathsat,33483
+vampire,33745
+yices2,33487
+yices2qs,33490
+yicesls,33491
+z3,33748
