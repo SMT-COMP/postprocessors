@@ -194,7 +194,7 @@ if [ "$CHECK_SAT_RESPONSE" == "unsat" ]; then
 				VALIDATION_SOLVER_PATH="validation_solvers/$VALIDATION_SOLVER/bin"
 				mkdir output
 				pushd $VALIDATION_SOLVER_PATH > /dev/null
-				timeout -k 10 $VALIDATION_TIMOUT ./starexec_run_default ./../../../unsat-core-validation-script.smt2 ./../../../output > ./../../../validationOutput.txt 2>/dev/null
+				timeout -k 10 $VALIDATION_TIMOUT ./starexec_run_default ./../../../unsat-core-validation-script.smt2 ./../../../output | grep -v 'success' > ./../../../validationOutput.txt 2>/dev/null
 				popd > /dev/null
 				rm -rf output
 				TIME_END=$(date +%s)
