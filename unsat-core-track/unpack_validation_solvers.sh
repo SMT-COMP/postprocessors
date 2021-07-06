@@ -33,5 +33,10 @@ tail -n +2 validation_solvers.csv | (
 	# clean up staging area
 	cd ..
 	rmdir stage || echo "Solver directory not clean"
+
+	# fix name of starexec_run script if not default.
+	if [ \! -e "validation_solvers/${SOLVER}/bin/starexec_run_default" ]; then
+	    mv validation_solvers/${SOLVER}/bin/starexec_run_{*,default}
+	fi
     done
 )
