@@ -40,3 +40,7 @@ tail -n +2 validation_solvers.csv | (
 	fi
     done
 )
+
+## HACK to make vampire work with `timeout` command.
+
+sed -i 's!^./vampire!exec ./vampire!' validation_solvers/vampire/bin/starexec_run_default
