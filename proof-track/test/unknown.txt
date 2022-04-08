@@ -1,0 +1,5 @@
+0.00/0.00	; run solver
+14.65/6.58	; checking proof
+14.73/6.79	unknown
+14.73/6.81	; done
+14.73/6.81	EOF

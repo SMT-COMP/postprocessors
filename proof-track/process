@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# Jochen Hoenicke
+
+# A simple post-processor for proof checker results.
+# The logic is:
+# - take the first line
+# - all other lines after it ignored
+# - if the line is valid, then the status is unsat.
+# - if the line is sat, then the status is sat.
+# - otherwise, the status is unknown.
+# - key-value pairs after the result are added to the result table.
+# - all non key-value pairs after the result are ignored.
+
+
+STATUS=$(
+# remove the StarExec timing information from each line of the solver output
+    sed 's/^[0-9]*\.[0-9]*\/[0-9]*.[0-9]*\t//g' "$1" | \
+# remove empty lines and lines containing a comment
+    egrep -v -e '^\s*(;.*)?\s*$' | \
+# the first answer wins, strip space around it.
+    head -1 | sed -E 's/^[[:space:]]*([[:alnum:]]+)[[:space:]]*$/\1/')
+
+if [[ "$STATUS" == "valid" ]]; then
+    # the output contains only the word "valid"
+    echo "starexec-result=unsat"
+    echo "reason=valid"
+elif [[ "$STATUS" == "sat" ]]; then
+    # the output contains only the word "valid"
+    echo "starexec-result=sat"
+else
+    echo "starexec-result=starexec-unknown"
+    if [[ "$STATUS" == "EOF" ]]; then
+	echo "reason=timeout"
+    elif [[ "$STATUS" == "invalid" ]]; then
+	echo "reason=invalid"
+    elif [[ "$STATUS" != "unknown" ]]; then
+	echo "reason=error"
+    else
+	echo "reason=unknown"
+    fi
+fi
+
+# retain any key/value pairs given by validator
+sed 's/^[0-9]*\.[0-9]*\/[0-9]*.[0-9]*\t//g' "$1" | \
+    grep -E '^[-A-Za-z0-9_]+=[-A-Za-z0-9_\.]*$'

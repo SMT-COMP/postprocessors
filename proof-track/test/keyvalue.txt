@@ -1,0 +1,9 @@
+0.00/0.00	; run solver
+1.51/0.67	; checking proof
+2.49/1.12	valid
+2.49/1.13	steps=1024993
+2.49/1.13	holes=0
+2.49/1.13	parsetime=0.4s
+2.49/1.13	arithsteps=304
+2.49/1.15	; done
+2.49/1.15	EOF

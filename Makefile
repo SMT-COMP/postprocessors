@@ -7,12 +7,14 @@
 # You need to checkout the scrambler repository into the same parent
 # directory as the postprocessor respository.
 
+YEAR=2022
 
 SCRAMBLER_DIR = ../scrambler
-POSTPROCESSORS = SMT-COMP-2021-single-query-post-processor.tar.gz \
-	SMT-COMP-2021-incremental-post-processor.tar.gz \
-	SMT-COMP-2021-unsat-core-post-processor.tar.gz \
-	SMT-COMP-2021-model-validation-post-processor.tar.gz
+POSTPROCESSORS = SMT-COMP-$(YEAR)-single-query-post-processor.tar.gz \
+	SMT-COMP-$(YEAR)-incremental-post-processor.tar.gz \
+	SMT-COMP-$(YEAR)-unsat-core-post-processor.tar.gz \
+	SMT-COMP-$(YEAR)-model-validation-post-processor.tar.gz \
+	SMT-COMP-$(YEAR)-proof-post-processor.tar.gz
 
 all: $(POSTPROCESSORS) test
 
@@ -23,24 +25,30 @@ $(SCRAMBLER_DIR)/scrambler:
 unsat-core-track/scrambler: $(SCRAMBLER_DIR)/scrambler
 	cp $< $@
 
-SMT-COMP-2021-single-query-post-processor.tar.gz: single-query-track/process
+SMT-COMP-$(YEAR)-single-query-post-processor.tar.gz: single-query-track/process
 	tar -C single-query-track -czf $@ process
 
-SMT-COMP-2021-incremental-post-processor.tar.gz: incremental-track/process
+SMT-COMP-$(YEAR)-incremental-post-processor.tar.gz: incremental-track/process
 	tar -C incremental-track -czf $@ process
 
-SMT-COMP-2021-unsat-core-post-processor.tar.gz: unsat-core-track/process unsat-core-track/scrambler
+SMT-COMP-$(YEAR)-unsat-core-post-processor.tar.gz: unsat-core-track/process unsat-core-track/scrambler
 	unsat-core-track/unpack_validation_solvers.sh
 	tar -C unsat-core-track -czf $@ process scrambler validation_solvers
 
-SMT-COMP-2021-model-validation-post-processor.tar.gz: model-validation-track/process model-validation-track/requirements.txt model-validation-track/ModelValidator.py
+SMT-COMP-$(YEAR)-model-validation-post-processor.tar.gz: model-validation-track/process model-validation-track/requirements.txt model-validation-track/ModelValidator.py
 	pip3 install -r model-validation-track/requirements.txt
 	cd model-validation-track; pyinstaller -F ModelValidator.py
 	cp model-validation-track/dist/ModelValidator model-validation-track
 	tar -C model-validation-track -czf $@ process ModelValidator
 
+SMT-COMP-$(YEAR)-proof-post-processor.tar.gz: single-query-track/process
+	tar -C proof-track -czf $@ process
+
 test:
+	(cd single-query-track; ./run_tests.sh)
 	(cd unsat-core-track; ./run-tests.sh)
+	(cd model-validation-track; ./run-tests.sh)
+	(cd proof-track; ./run_tests.sh)
 
 .PHONY: all clean test
 

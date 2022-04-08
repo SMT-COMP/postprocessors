@@ -1,0 +1,6 @@
+starexec-result=unsat
+reason=valid
+steps=1024993
+holes=0
+parsetime=0.4s
+arithsteps=304
