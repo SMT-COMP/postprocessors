@@ -6,7 +6,7 @@
 # The logic is:
 # - take the first line
 # - all other lines after it ignored
-# - if the line is valid, then the status is unsat.
+# - if the line is valid or holey, then the status is unsat.
 # - if the line is sat, then the status is sat.
 # - otherwise, the status is unknown.
 # - key-value pairs after the result are added to the result table.
@@ -25,8 +25,12 @@ if [[ "$STATUS" == "valid" ]]; then
     # the output contains only the word "valid"
     echo "starexec-result=unsat"
     echo "reason=valid"
+elif [[ "$STATUS" == "holey" ]]; then
+    # the output contains only the word "holey" - a valid proof with holes.
+    echo "starexec-result=unsat"
+    echo "reason=holey"
 elif [[ "$STATUS" == "sat" ]]; then
-    # the output contains only the word "valid"
+    # the output contains only the word "sat"
     echo "starexec-result=sat"
 else
     echo "starexec-result=starexec-unknown"
