@@ -5,5 +5,7 @@
 
 for file in test/*.txt; do
     expected=${file%.txt}.expected
-    ./process "$file" | diff ${expected} - || echo "... in $file"
+    ./process "$file" > test.out || echo "post-processor error in $file"
+    diff ${expected} test.out || echo "... in $file"
+    rm test.out
 done
