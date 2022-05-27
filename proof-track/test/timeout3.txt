@@ -1,0 +1,3 @@
+0.00/0.00	; run solver
+576.11/527.72	; checking proof
+710.50/600.07	EOF

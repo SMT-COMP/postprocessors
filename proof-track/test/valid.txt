@@ -1,0 +1,5 @@
+0.00/0.00	; run solver
+1.51/0.67	; checking proof
+2.49/1.12	valid
+2.49/1.15	; done
+2.49/1.15	EOF
