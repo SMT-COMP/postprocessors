@@ -4,7 +4,7 @@ BENCHMARK="$1"
 OUTDIR="$2"
 
 echo "; run solver"
-./starexec_solver_default ${BENCHMARK} > proof.txt 2>${OUTDIR}/solver-error.log
+./smtcomp_solver ${BENCHMARK} > proof.txt 2>${OUTDIR}/solver-error.log
 
 echo "; compressing proof"
 PROOF_SIZE=`stat --printf="%s" proof.txt`
@@ -13,6 +13,6 @@ COMPRESS_SIZE=`stat --printf="%s" ${OUTDIR}/proof.txt.gz`
 echo "; proof size: ${PROOF_SIZE} (${COMPRESS_SIZE} compressed)"
 
 echo "; checking proof"
-./starexec_checker_default ${BENCHMARK} proof.txt 2>${OUTDIR}/checker-error.log
+./smtcomp_checker ${BENCHMARK} proof.txt 2>${OUTDIR}/checker-error.log
 echo "proofsize=${PROOF_SIZE}"
 echo "compressedsize=${COMPRESS_SIZE}"
