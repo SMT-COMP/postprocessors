@@ -4,3 +4,4 @@ RUN yum -y install gcc gcc-c++ make flex bison glibc-static libstdc++-static pyt
 WORKDIR /smtcomp
 COPY ./scrambler ./scrambler
 COPY ./postprocessors ./postprocessors
+COPY ./trace-executor ./trace-executor
