@@ -1,3 +1,3 @@
-git+https://github.com/pysmt/pysmt.git@3734de96d8ff4ada83735eab69c105d829f574fe
+git+https://github.com/smt-comp/pysmt.git@bd64dcea2fc9393ad1d8f8421b5d56a813a966a7
 configparser==4.0.2
 pyinstaller==4.3

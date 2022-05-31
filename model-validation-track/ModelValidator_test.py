@@ -19,6 +19,7 @@ UNKNOWN_TEST_CASES = [
     ("QF_BV", "test6.smt2", "model4.unknown.smt2"),
     ("QF_BV", "test6.smt2", "model0.empty.smt2"),
     ("QF_BV", "test4.smt2", "model4.sat-no-model.smt2"),
+    ("QF_LIA", "test2.smt2", "model2.invalid.smt2"),
 #    ("QF_LRA", "test0.smt2", "model0.4.smt2"),
 #    ("QF_LIRA", "test0.smt2", "model0.1.smt2"),
 #    ("QF_LIRA", "LCTES_smtopt.smt2", "model.LCTES_smtopt.cvc4-broken.smt2"),
