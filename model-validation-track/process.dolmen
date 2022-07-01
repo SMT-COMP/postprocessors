@@ -3,15 +3,10 @@
 # This is a wrapper script that allows the model validator to be used as a
 # postprocessor on StarExec.
 
-# $1: model
+# $1: cleaned up model
 # $2: benchmark after preprocessing
 
-# remove the StarExec timing information from each line of the solver output
-sed 's/^[0-9]*\.[0-9]*\/[0-9]*.[0-9]*\t//g' "$1" | \
-# remove success response lines from solver output
-grep -v '^success$' > ./cleanSolverOutput.txt
-
-./dolmen --check-model=true $2 < cleanSolverOutput.txt > error.txt
+./dolmen --check-model=true $2 < $1 &> error.txt
 EXITSTATUS=$?
 
 if [ "$EXITSTATUS" = "0" ]; then
@@ -26,6 +21,6 @@ else
 fi
 echo "dolmenexit=$EXITSTATUS"
 if [ -s "error.txt" ]; then
-    echo "model_validation_error="`head -1 error.txt | gzip -n | base64 -w0 | tr '=' '-'`
+    echo "model_validation_error="`grep '^[WEF]:' error.txt`
 fi
-exit 0;
+exit 0
