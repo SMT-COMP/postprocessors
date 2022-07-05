@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # This is a wrapper script that allows the model validator to be used as a
 # postprocessor on StarExec.
@@ -6,7 +6,7 @@
 # $1: cleaned up model
 # $2: benchmark after preprocessing
 
-./dolmen --check-model=true $2 < $1 &> error.txt
+./dolmen --check-model=true --report-style=minimal "$2" < "$1" &> error.txt
 EXITSTATUS=$?
 
 if [ "$EXITSTATUS" = "0" ]; then
@@ -21,6 +21,6 @@ else
 fi
 echo "dolmenexit=$EXITSTATUS"
 if [ -s "error.txt" ]; then
-    echo "model_validation_error="`grep '^[WEF]:' error.txt`
+    echo "model_validation_error="$(grep '^[EF]:' error.txt | head -1)
 fi
 exit 0

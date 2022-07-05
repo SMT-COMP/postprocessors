@@ -12,9 +12,9 @@ sed 's/^[0-9]*\.[0-9]*\/[0-9]*.[0-9]*\t//g' "$1" | \
 grep -v '^success$' > ./cleanSolverOutput.txt
 
 # use dolmen for FP logics, ModelValidator (pySMT) for everything else
-if grep '(set-logic' $2 | grep FP >/dev/null; then
-    ./process.dolmen ./cleanSolverOutput.txt $2
+if grep '(set-logic' "$2" | grep FP >/dev/null; then
+    ./process.dolmen ./cleanSolverOutput.txt "$2"
 else
-    ./ModelValidator --smt2 $2 --model ./cleanSolverOutput.txt
+    ./ModelValidator --smt2 "$2" --model ./cleanSolverOutput.txt
 fi
 

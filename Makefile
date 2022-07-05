@@ -10,6 +10,8 @@
 YEAR=2022
 
 SCRAMBLER_DIR = ../scrambler
+DOLMEN_DIR = ../dolmen
+DOLMEN_MAIN_EXE = _build/default/src/bin/main.exe
 POSTPROCESSORS = SMT-COMP-$(YEAR)-single-query-post-processor.tar.gz \
 	SMT-COMP-$(YEAR)-incremental-post-processor.tar.gz \
 	SMT-COMP-$(YEAR)-unsat-core-post-processor.tar.gz \
@@ -25,6 +27,11 @@ $(SCRAMBLER_DIR)/scrambler:
 unsat-core-track/scrambler: $(SCRAMBLER_DIR)/scrambler
 	cp $< $@
 
+$(DOLMEN_DIR)/$(DOLMEN_MAIN_EXE):
+	bash -c 'eval `opam env`; make -C $(DOLMEN_DIR)'
+model-validation-track/dolmen: $(DOLMEN_DIR)/$(DOLMEN_MAIN_EXE)
+	cp $< $@
+
 SMT-COMP-$(YEAR)-single-query-post-processor.tar.gz: single-query-track/process
 	tar -C single-query-track -czf $@ process
 
@@ -35,11 +42,11 @@ SMT-COMP-$(YEAR)-unsat-core-post-processor.tar.gz: unsat-core-track/process unsa
 	unsat-core-track/unpack_validation_solvers.sh
 	tar -C unsat-core-track -czf $@ process scrambler validation_solvers
 
-SMT-COMP-$(YEAR)-model-validation-post-processor.tar.gz: model-validation-track/process model-validation-track/requirements.txt model-validation-track/ModelValidator.py
+SMT-COMP-$(YEAR)-model-validation-post-processor.tar.gz: model-validation-track/process model-validation-track/process.dolmen model-validation-track/requirements.txt model-validation-track/ModelValidator.py model-validation-track/dolmen
 	pip3 install -r model-validation-track/requirements.txt
 	cd model-validation-track; pyinstaller -F ModelValidator.py
 	cp model-validation-track/dist/ModelValidator model-validation-track
-	tar -C model-validation-track -czf $@ process ModelValidator
+	tar -C model-validation-track -czf $@ process process.dolmen ModelValidator dolmen
 
 SMT-COMP-$(YEAR)-proof-post-processor.tar.gz: single-query-track/process
 	tar -C proof-track -czf $@ process
