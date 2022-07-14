@@ -6,7 +6,7 @@
 # $1: cleaned up model
 # $2: benchmark after preprocessing
 
-./dolmen --check-model=true --report-style=minimal "$2" < "$1" &> error.txt
+./dolmen --force-smtlib2-logic=ALL --check-model=true --report-style=minimal "$2" < "$1" &> error.txt
 EXITSTATUS=$?
 
 if [ "$EXITSTATUS" = "0" ]; then
