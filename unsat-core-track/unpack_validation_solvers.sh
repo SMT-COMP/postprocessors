@@ -15,29 +15,30 @@ mkdir -p download
 
 tail -n +2 validation_solvers.csv | (
     IFS=,
-    while read SOLVER ID; do
-	# download solver, if not already downloaded
-	if [ \! -e "download/${ID}.zip" ]; then
-	    curl -o download/${ID}.zip 'https://www.starexec.org/starexec/secure/download?type=solver&id='${ID}
-	fi
-	
-	# unpack solver to staging area
-	rm -rf stage
-	mkdir -p stage
-	cd stage
-	unzip ../download/${ID}.zip
+    while read SOLVER ID CONFIG; do
+        # download solver, if not already downloaded
+        if [ \! -e "download/${ID}.zip" ]; then
+            curl -o download/${ID}.zip 'https://www.starexec.org/starexec/secure/download?type=solver&id='${ID}
+        fi
 
-	# now move solver directory to validation_solvers
-	mv * ../validation_solvers/${SOLVER}
-	
-	# clean up staging area
-	cd ..
-	rmdir stage || echo "Solver directory not clean"
+        # unpack solver to staging area
+        rm -rf stage
+        mkdir -p stage
+        cd stage
+        unzip ../download/${ID}.zip
 
-	# fix name of starexec_run script if not default.
-	if [ \! -e "validation_solvers/${SOLVER}/bin/starexec_run_default" ]; then
-	    mv validation_solvers/${SOLVER}/bin/starexec_run_{*,default}
-	fi
+        # now move solver directory to validation_solvers
+        mv * ../validation_solvers/${SOLVER}
+
+        # clean up staging area
+        cd ..
+        rmdir stage || echo "Solver directory not clean"
+
+        # change name of starexec_run script if not default.
+        if [ "${CONFIG}" != "default" ]; then
+            mv validation_solvers/${SOLVER}/bin/starexec_run_${CONFIG} \
+               validation_solvers/${SOLVER}/bin/starexec_run_default
+        fi
     done
 )
 
