@@ -3,6 +3,10 @@
 # Tjark Weber
 # SMT-COMP post-processor for the application track
 
+# Jochen Hoenicke:
+# We also get the cpu/wall time stamp for the last sat/unsat answer:
+#    x/x ; compressing proof               <-- solver time
+
 set -e
 set -u
 
@@ -15,4 +19,12 @@ else
     SAT=$(grep -csw 'sat$' "$1") || SAT=0
     UNSAT=$(grep -csw 'unsat$' "$1") || UNSAT=0
     echo "correct-answers=$((SAT+UNSAT))"
+fi
+
+SOLVER_TIME=$(grep 'sat$'  "$1" | tail -1 | cut -f1)
+if [ -n "$SOLVER_TIME" ]; then
+    CPU=$(echo $SOLVER_TIME | cut -d/ -f1)
+    WALL=$(echo $SOLVER_TIME | cut -d/ -f2)
+    echo "solver-cpu-time=$CPU"
+    echo "solver-wall-time=$WALL"
 fi
