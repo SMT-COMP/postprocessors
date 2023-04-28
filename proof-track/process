@@ -12,6 +12,14 @@
 # - key-value pairs after the result are added to the result table.
 # - all non key-value pairs after the result are ignored.
 
+# We also get the cpu/wall time of the different steps as follows:
+#    x/x ; compressing proof               <-- solver time
+#    x/x ; checking proof                  <-- start checking time
+#    x/x ; valid/invalid/holey/sat/unknown <-- end checking time
+
+SOLVER_TIME_PAIR=$(grep '; compressing proof'  "$1" | cut -f1)
+CHECKSTART_TIME_PAIR=$(grep '; checking proof'  "$1" | cut -f1)
+CHECKEND_TIME_PAIR=$(grep '\(valid\|invalid\|holey\|sat\|unknown\)'  "$1" | cut -f1)
 
 STATUS=$(
 # remove the StarExec timing information from each line of the solver output
@@ -43,6 +51,24 @@ else
     else
 	echo "reason=unknown"
     fi
+fi
+
+# compute times from time stamps
+if [ -n "$SOLVER_TIME_PAIR" ]; then
+    CPU=$(echo $SOLVER_TIME_PAIR | cut -d/ -f1)
+    WALL=$(echo $SOLVER_TIME_PAIR | cut -d/ -f2)
+    echo "solver_cpu_time=$CPU"
+    echo "solver_wall_time=$WALL"
+fi
+if [ -n "$CHECKSTART_TIME_PAIR" -a -n "$CHECKEND_TIME_PAIR" ]; then
+    CPU1=$(echo $CHECKSTART_TIME_PAIR | cut -d/ -f1)
+    WALL1=$(echo $CHECKSTART_TIME_PAIR | cut -d/ -f2)
+    CPU2=$(echo $CHECKEND_TIME_PAIR | cut -d/ -f1)
+    WALL2=$(echo $CHECKEND_TIME_PAIR | cut -d/ -f2)
+    CPU=$(perl -e 'printf "%.2f",'"$CPU2"' - '"$CPU1")
+    WALL=$(perl -e 'printf "%.2f", '"$WALL2"' - '"$WALL1")
+    echo "checker_cpu_time=$CPU"
+    echo "checker_wall_time=$WALL"
 fi
 
 # retain any key/value pairs given by validator
