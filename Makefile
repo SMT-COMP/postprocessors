@@ -7,7 +7,7 @@
 # You need to checkout the scrambler repository into the same parent
 # directory as the postprocessor respository.
 
-YEAR=2022
+YEAR=2023
 
 SCRAMBLER_DIR = ../scrambler
 DOLMEN_DIR = ../dolmen
