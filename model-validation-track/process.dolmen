@@ -20,7 +20,7 @@ else
     echo "model_validator_status=UNKNOWN"
 fi
 echo "dolmenexit=$EXITSTATUS"
-if [ -s "error.txt" ]; then
-    echo "model_validation_error="$(grep '^[EF]:' error.txt | head -1)
+if grep -q '^[EF]:' error.txt; then
+    echo "model_validator_error="$(grep '^[EF]:' error.txt | head -1)
 fi
 exit 0
