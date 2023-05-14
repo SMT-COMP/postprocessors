@@ -11,6 +11,8 @@ scripts in the docker sub-directory.
 ```
 git clone https://github.com/SMT-COMP/scrambler
 git clone https://github.com/SMT-COMP/postprocessors
+git clone https://github.com/SMT-COMP/dolmen
+git clone https://github.com/bobot/ocaml-flint --recursive
 cd postprocessors/docker
 ./create-docker.sh
 ./build-docker.sh

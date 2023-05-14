@@ -14,6 +14,8 @@ rm -rf ./trace-executor/.git
 rm -rf ./trace-executor/docker
 make -C trace-executor clean
 cp -a ../../dolmen .
+cp -a ../../ocaml-flint dolmen
+rm -rf ./dolmen/.git ./dolmen/ocaml-flint/antic/antic/antic/.git ./dolmen/ocaml-flint/arb/arb/.git ./dolmen/ocaml-flint/calcium/lib/calcium/.git ./dolmen/ocaml-flint/flint/flint/flint2/.git
 make -C dolmen clean
 test -e ${OPAM_INSTALLER} || \
     wget https://github.com/ocaml/opam/releases/download/${OPAM_VERSION}/${OPAM_INSTALLER}

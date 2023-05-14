@@ -9,7 +9,8 @@ RUN chmod a+rx /usr/local/bin/opam
 
 RUN opam init -y --compiler=4.13.1
 RUN opam update
-RUN opam install -y cmdliner.1.1.1 dune.3.2.0 spelll.0.4 gen.1.0 fmt.0.9.0 linol-lwt.0.4 menhir.20220210 pp_loc.2.1.0 zarith.1.12 farith
+RUN opam install -y cmdliner.1.1.1 dune.3.2.0 spelll.0.4 gen.1.0 fmt.0.9.0 linol-lwt.0.4 menhir.20220210 pp_loc.2.1.0 zarith.1.12 farith dune-site dune-configurator ctypes
+RUN yum -y install mpfr-devel
 
 WORKDIR /smtcomp
 COPY ./scrambler ./scrambler
