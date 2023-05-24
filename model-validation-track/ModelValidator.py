@@ -19,8 +19,8 @@ def readModel(parser, modelFile, inputFile):
                 break
 
         if (read_status == "unknown"):
-            print ("model_validator_status=UNKNOWN")
-            print ("model_validator_error=solver_returned_unknown")
+            print ("model_validator_pysmt_status=UNKNOWN")
+            print ("model_validator_pysmt_error=solver_returned_unknown")
             sys.exit(0)
         if (read_status == "unsat"):
             status = None
@@ -29,22 +29,22 @@ def readModel(parser, modelFile, inputFile):
                     if ":status" in line:
                         if "unsat" in line:
                             status = "unsat"
-                            print ("model_validator_status=UNKNOWN")
-                            print ("model_validator_error=the_problem_status_is_unsatisfiable")
+                            print ("model_validator_pysmt_status=UNKNOWN")
+                            print ("model_validator_pysmt_error=the_problem_status_is_unsatisfiable")
                         elif "sat" in line:
                             status = "sat"
-                            print ("model_validator_status=INVALID")
-                            print ("model_validator_error=the_problem_status_is_satisfiable")
+                            print ("model_validator_pysmt_status=INVALID")
+                            print ("model_validator_pysmt_error=the_problem_status_is_satisfiable")
                         elif "unknown" in line:
-                            print ("model_validator_status=UNKNOWN")
-                            print ("model_validator_error=the_problem_status_is_unknown")
+                            print ("model_validator_pysmt_status=UNKNOWN")
+                            print ("model_validator_pysmt_error=the_problem_status_is_unknown")
                             status = "unknown"
                         break
             # the benchmark scrambler removes the status line, in case of a
             # benchmark without status line we assume satisfiability
             if not status:
-                print ("model_validator_status=INVALID")
-                print ("model_validator_error=solver_returned_unsat")
+                print ("model_validator_pysmt_status=INVALID")
+                print ("model_validator_pysmt_error=solver_returned_unsat")
             sys.exit(0)
         if (read_status != "sat"):
             raise PysmtSyntaxError("'sat' expected at line %d" % lino)
@@ -63,14 +63,14 @@ def readSmtFile(parser, smtFile):
 
 def checkFullModel(model, interpretation, symbols):
     if len(model) + len(interpretation) > len(symbols):
-        print ("model_validator_status=UNKNOWN")
-        print ("model_validator_error=more_variables_in_model_than_input")
+        print ("model_validator_pysmt_status=UNKNOWN")
+        print ("model_validator_pysmt_error=more_variables_in_model_than_input")
         sys.exit(0)
 
     for symbol in symbols:
         if symbol not in model and symbol not in interpretation:
-            print ("model_validator_status=UNKNOWN")
-            print ("model_validator_error=missing_model_value")
+            print ("model_validator_pysmt_status=UNKNOWN")
+            print ("model_validator_pysmt_error=missing_model_value")
             sys.exit(0)
 
 
@@ -83,8 +83,8 @@ def validateModel(smtFile, modelFile, inputFile):
             raise Exception("File not found: {}".format(modelFile))
 
         if path.getsize(modelFile) == 0:
-            print ("model_validator_status=UNKNOWN")
-            print ("model_validator_error=no_output")
+            print ("model_validator_pysmt_status=UNKNOWN")
+            print ("model_validator_pysmt_error=no_output")
             sys.exit(0)
 
         parser = SmtLibParser()
@@ -97,19 +97,18 @@ def validateModel(smtFile, modelFile, inputFile):
         result = simplifier.simplify(formula.substitute(model, interpretation))
 
         if result.is_false():
-            print ("model_validator_status=INVALID")
-            print ("model_validator_error=model_evaluates_to_false")
+            print ("model_validator_pysmt_status=INVALID")
+            print ("model_validator_pysmt_error=model_evaluates_to_false")
         elif result.is_true():
-            print ("model_validator_status=VALID")
-            print ("model_validator_error=none")
-            print ("starexec-result=sat")
+            print ("model_validator_pysmt_status=VALID")
+            print ("model_validator_pysmt_error=none")
         else:
-            print ("model_validator_status=UNKNOWN")
-            print ("model_validator_error=not_full_model")
+            print ("model_validator_pysmt_status=UNKNOWN")
+            print ("model_validator_pysmt_error=not_full_model")
     except Exception as e:
-        print ("model_validator_status=UNKNOWN")
-        print ("model_validator_error=unhandled_exception")
-        print ("model_validator_exception=\"{}\"".format(str(e).replace("'", "\\'").replace('"', '\\"').replace('\n',' ')))
+        print ("model_validator_pysmt_status=UNKNOWN")
+        print ("model_validator_pysmt_error=unhandled_exception")
+        print ("model_validator_pysmt_exception=\"{}\"".format(str(e).replace("'", "\\'").replace('"', '\\"').replace('\n',' ')))
         sys.exit(0)
 
 
@@ -128,7 +127,7 @@ def main():
 try:
     main()
 except Exception as e:
-    print ("model_validator_status=UNKNOWN")
-    print ("model_validator_error=toplevel_unhandled_exception")
-    print ("model_validator_exception=\"{}\"".format(str(e).replace("'", "\\'").replace('"', '\\"').replace('\n',' ')))
+    print ("model_validator_pysmt_status=UNKNOWN")
+    print ("model_validator_pysmt_error=toplevel_unhandled_exception")
+    print ("model_validator_pysmt_exception=\"{}\"".format(str(e).replace("'", "\\'").replace('"', '\\"').replace('\n',' ')))
     sys.exit(0)
