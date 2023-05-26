@@ -6,12 +6,15 @@
 # $1: cleaned up model
 # $2: benchmark after preprocessing
 
-./dolmen --force-smtlib2-logic=ALL --check-model=true --report-style=minimal "$2" < "$1" &> error.txt
+./dolmen --time=1h --size=40G --strict=false --check-model=true --report-style=minimal "$2" < "$1" &> error.txt
 EXITSTATUS=$?
 
 if [ "$EXITSTATUS" = "0" ]; then
     echo "starexec-result=sat"
     echo "model_validator_status=VALID"
+elif [ "$EXITSTATUS" = "2" ]; then
+    echo "starexec-result=unknown"
+    echo "model_validator_status=LIMITREACHED"
 elif [ "$EXITSTATUS" = "5" ]; then
     echo "starexec-result=unsat"
     echo "model_validator_status=INVALID"
