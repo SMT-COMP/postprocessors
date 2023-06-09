@@ -1,17 +1,18 @@
-Solver,StarExec ID,Config
-bitwuzla,39124,default
-colibri,39136,default
-cvc5,39125,sq
-nra-ls,39137,default
-opensmt,39128,default
-ostrich,39138,def
-q3b,39139,default
-smtinterpol,39129,default
-stp,39131,default
-ultimateeliminator+mathsat,39135,default
-vampire,39132,vampire_smtcomp
-verit,39142,default
-yices2,39144,default
-yicesqs,39210,default
-z3++,39147,default
-z3str4,39149,default
+Solver,Solver ID,Config
+"COLIBRI",44384,default
+"Z3++",44702,default
+"SMT-RAT-MCSAT",44765,default
+"ismt",44672,default
+"yices-ismt",44713,default
+"cvc5-NRA-LS",44741,default
+"SMTInterpol",44759,default
+"Bitwuzla",44756,default
+"Yices2",44479,default
+"YicesQS",39111,default
+"STP",41385,default
+"UltimateEliminator+MathSAT",44761,default
+"Q3B",44707,default
+"cvc5",44737,sq
+"OpenSMT",44750,default
+"Yaga",44678,default
+"z3-alpha",44764,default

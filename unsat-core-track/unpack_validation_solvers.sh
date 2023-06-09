@@ -43,5 +43,5 @@ tail -n +2 validation_solvers.csv | (
 )
 
 ## HACK to make vampire work with `timeout` command.
-
-sed -i 's!^./vampire!exec ./vampire!' validation_solvers/vampire/bin/starexec_run_default
+# Vampire is not used this year
+#sed -i 's!^./vampire!exec ./vampire!' validation_solvers/vampire/bin/starexec_run_default
