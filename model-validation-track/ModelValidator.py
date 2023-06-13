@@ -108,7 +108,8 @@ def validateModel(smtFile, modelFile, inputFile):
     except Exception as e:
         print ("model_validator_pysmt_status=UNKNOWN")
         print ("model_validator_pysmt_error=unhandled_exception")
-        print ("model_validator_pysmt_exception=\"{}\"".format(str(e).replace("'", "\\'").replace('"', '\\"').replace('\n',' ')))
+        #starexec cut the last = instead of the first
+        print ("model_validator_pysmt_exception=\"{}\"".format(str(e).replace("'", "\\'").replace('"', '\\"').replace('\n',' ').replace('=','⩵')))
         sys.exit(0)
 
 
