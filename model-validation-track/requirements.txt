@@ -1,3 +1,3 @@
 git+https://github.com/smt-comp/pysmt.git@bd64dcea2fc9393ad1d8f8421b5d56a813a966a7
 configparser==4.0.2
-pyinstaller==4.3
+pyinstaller==5.13.1
